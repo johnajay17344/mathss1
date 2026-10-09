@@ -312,21 +312,17 @@
     <div class="brand-mark">SH</div>
     <div class="brand-text">
       <div class="school">Sweet Hope School</div>
-      <div class="dept">SS2 Mathematics · Number Base System</div>
+      <div class="dept">SS1 Mathematics</div>
     </div>
   </div>
 
   <!-- SCREEN 1: Name entry -->
   <section id="screen-start" class="glass">
     <div class="base-motif">
-      <span class="base-chip">101₂</span>
-      <span class="base-chip">27₈</span>
-      <span class="base-chip">4A₁₆→ n/a</span>
-      <span class="base-chip">36₇</span>
-      <span class="base-chip">0.101₂</span>
+      <span class="base-chip">Contact on : 09053136393</span>
     </div>
-    <h1 class="hero-title">Number Base System</h1>
-    <p class="hero-sub">50 questions on converting base 10 numbers — whole and decimal — into bases 2 to 9. Every answer shows the full working, so you learn as you go.</p>
+    <h1 class="hero-title">Modular Arithmetics And Indicies</h1>
+    <p class="hero-sub">50 questions . Every answer shows the full working, so you learn as you go.</p>
     <label class="field-label" for="student-name">Enter your full name to begin</label>
     <input type="text" id="student-name" class="text-input" placeholder="e.g. Ada Okafor" autocomplete="off">
     <div class="err-msg" id="name-err"></div>
@@ -341,7 +337,7 @@
     </div>
     <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:2%;"></div></div>
 
-    <div class="q-eyebrow" id="q-type-label">CONVERT TO ANOTHER BASE</div>
+    <div class="q-eyebrow" id="q-type-label"></div>
     <h2 class="q-text" id="q-text"></h2>
 
     <div class="options" id="options-wrap"></div>
@@ -376,59 +372,12 @@
 
   <div class="footer-note" id="global-footer">Sweet Hope School · SS2 Mathematics</div>
 </div>
-
 <script>
 (function(){
 
-  // ---------- Base conversion engine ----------
-
-  function intToBase(n, base){
-    if(n === 0) return { digits: '0', steps: [] };
-    var steps = [];
-    var cur = n;
-    while(cur > 0){
-      var q = Math.floor(cur / base);
-      var r = cur % base;
-      steps.push({ dividend: cur, base: base, quotient: q, remainder: r });
-      cur = q;
-    }
-    var digits = steps.map(function(s){ return s.remainder; }).reverse().join('');
-    return { digits: digits, steps: steps };
-  }
-
-  // exact rational fractional conversion: numerator/denominator in base 10
-  function fracToBase(numerator, denominator, base, places){
-    var steps = [];
-    var digits = '';
-    var num = numerator;
-    for(var i = 0; i < places; i++){
-      var productNum = num * base;
-      var digit = Math.floor(productNum / denominator);
-      steps.push({
-        beforeNum: num, denominator: denominator, base: base,
-        productNum: productNum, digit: digit
-      });
-      num = productNum - digit * denominator;
-      digits += digit.toString();
-    }
-    return { digits: digits, steps: steps };
-  }
-
-  var FRAC_PLACES = 4;
-
-  function buildConversion(q){
-    // q: {type, intPart, base, fracNumerator?, fracDenominator?}
-    var intRes = intToBase(q.intPart, q.base);
-    if(q.type === 'int'){
-      return { answer: intRes.digits, intRes: intRes, fracRes: null };
-    } else {
-      var fracRes = fracToBase(q.fracNumerator, q.fracDenominator, q.base, FRAC_PLACES);
-      return { answer: intRes.digits + '.' + fracRes.digits, intRes: intRes, fracRes: fracRes };
-    }
-  }
-
-  // ---------- Question generation ----------
-
+  // ---------- Helpers ----------
+  function randInt(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
+  function pick(arr){ return arr[randInt(0, arr.length - 1)]; }
   function shuffle(arr){
     var a = arr.slice();
     for(var i = a.length - 1; i > 0; i--){
@@ -437,84 +386,726 @@
     }
     return a;
   }
+  function pow(b, e){ return Math.pow(b, e); }
+  function pm(a, n){ return ((a % n) + n) % n; }                 // positive remainder
+  function pw(v, e){ return e === 1 ? v : v + '^{' + e + '}'; }  // variable with index (hides ^1)
+  function lin(a, c){                                            // builds e.g. "2x + 3" or "x − 4"
+    var t = (a === 1 ? '' : a) + 'x';
+    if(c > 0) t += ' + ' + c;
+    else if(c < 0) t += ' − ' + (-c);
+    return t;
+  }
+  function num(s){ return '<span class="num">' + s + '</span>'; }
+  // ^{...} becomes a superscript on screen
+  function fmtHtml(s){ return String(s).replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>'); }
 
-  function randInt(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
+  // =====================================================
+  //  MODULAR ARITHMETIC GENERATORS (15 questions)
+  // =====================================================
+  var EY_MOD = 'MODULAR ARITHMETIC';
+
+  function modAdd(){
+    var n = randInt(6, 13), a = randInt(120, 999), b = randInt(120, 999);
+    var ra = a % n, rb = b % n, s = ra + rb, ans = s % n;
+    return {
+      eyebrow: EY_MOD,
+      html: 'Find ' + num('(' + a + ' + ' + b + ') mod ' + n),
+      answer: String(ans),
+      wrong: [s, (ra * rb) % n, pm(ra - rb, n), (a + b) % (n + 1), (ans + 1) % n],
+      steps: [
+        a + ' mod ' + n + ' = ' + ra,
+        b + ' mod ' + n + ' = ' + rb,
+        'Add the remainders: ' + ra + ' + ' + rb + ' = ' + s,
+        s + ' mod ' + n + ' = ' + ans
+      ]
+    };
+  }
+
+  function modMul(){
+    var n = randInt(6, 13), a = randInt(120, 999), b = randInt(120, 999);
+    var ra = a % n, rb = b % n, p = ra * rb, ans = p % n;
+    return {
+      eyebrow: EY_MOD,
+      html: 'Find ' + num('(' + a + ' × ' + b + ') mod ' + n),
+      answer: String(ans),
+      wrong: [p, (ra + rb) % n, pm(ra - rb, n), (a * b) % (n + 1), (ans + 1) % n],
+      steps: [
+        a + ' mod ' + n + ' = ' + ra,
+        b + ' mod ' + n + ' = ' + rb,
+        'Multiply the remainders: ' + ra + ' × ' + rb + ' = ' + p,
+        p + ' mod ' + n + ' = ' + ans
+      ]
+    };
+  }
+
+  function modSub(){
+    var n = randInt(5, 12), a = randInt(10, 90), b = randInt(150, 600);
+    var d = a - b, k = Math.ceil(-d / n), v = d + k * n;
+    return {
+      eyebrow: EY_MOD + ' (NEGATIVE RESULT)',
+      html: 'Find ' + num('(' + a + ' − ' + b + ') mod ' + n) + ' as a number from 0 to ' + (n - 1),
+      answer: String(v),
+      wrong: [d % n, (b - a) % n, (n - v) % n, (v + 1) % n],
+      steps: [
+        a + ' − ' + b + ' = ' + d + ' (negative)',
+        'Add multiples of ' + n + ' until the result is between 0 and ' + (n - 1) + ':',
+        d + ' + ' + k + ' × ' + n + ' = ' + v
+      ]
+    };
+  }
+
+  function modLin(){
+    var n = randInt(7, 15), a = randInt(8, 45), b = randInt(8, 45);
+    var d = b - a, ans = pm(d, n);
+    return {
+      eyebrow: EY_MOD + ' (SOLVING)',
+      html: 'Solve for x: ' + num('x + ' + a + ' ≡ ' + b + ' (mod ' + n + ')') + ', where 0 ≤ x &lt; ' + n,
+      answer: String(ans),
+      wrong: [(a + b) % n, d, (n - ans) % n, (ans + 1) % n, (ans + n - 1) % n],
+      steps: [
+        'Subtract ' + a + ' from both sides: x ≡ ' + b + ' − ' + a + ' (mod ' + n + ')',
+        b + ' − ' + a + ' = ' + d,
+        d + ' mod ' + n + ' = ' + ans
+      ]
+    };
+  }
+
+  function modMulSolve(){
+    var n = pick([7, 11, 13]), a = randInt(2, n - 1), x = randInt(2, n - 1), b = (a * x) % n;
+    var steps = ['Test x = 1, 2, 3, … until ' + a + ' × x leaves remainder ' + b + ' when divided by ' + n + ':'];
+    for(var k = 1; k <= x; k++){
+      steps.push(a + ' × ' + k + ' = ' + (a * k) + ' ≡ ' + ((a * k) % n) + ' (mod ' + n + ')' + (k === x ? '   ✓ matches ' + b : ''));
+    }
+    return {
+      eyebrow: EY_MOD + ' (SOLVING)',
+      html: 'Solve for x: ' + num(a + 'x ≡ ' + b + ' (mod ' + n + ')') + ', where 0 &lt; x &lt; ' + n,
+      answer: String(x),
+      wrong: [b, n - x, (x % (n - 1)) + 1, pm(b - a, n), Math.floor(b / a)],
+      steps: steps
+    };
+  }
+
+  function modCombo(){
+    var n = randInt(7, 13), a = randInt(12, 99), b = randInt(12, 99), c = randInt(12, 99), d = randInt(12, 99);
+    var r1 = (a * b) % n, r2 = (c * d) % n, s = r1 + r2, ans = s % n;
+    return {
+      eyebrow: EY_MOD,
+      html: 'Find ' + num('(' + a + ' × ' + b + ' + ' + c + ' × ' + d + ') mod ' + n),
+      answer: String(ans),
+      wrong: [s, (r1 * r2) % n, pm(r1 - r2, n), (a * b + c * d) % (n + 1), (ans + 1) % n],
+      steps: [
+        a + ' × ' + b + ' = ' + (a * b) + ', and ' + (a * b) + ' mod ' + n + ' = ' + r1,
+        c + ' × ' + d + ' = ' + (c * d) + ', and ' + (c * d) + ' mod ' + n + ' = ' + r2,
+        'Add: ' + r1 + ' + ' + r2 + ' = ' + s,
+        s + ' mod ' + n + ' = ' + ans
+      ]
+    };
+  }
+
+  function hr(k){ return (((k - 1) % 12) + 12) % 12 + 1; }
+  function modClock(){
+    var h = randInt(1, 12), N = randInt(60, 500);
+    var r = N % 12, s = h + r, ans = s > 12 ? s - 12 : s;
+    function t(k){ return hr(k) + " o'clock"; }
+    return {
+      eyebrow: EY_MOD + ' (CLOCK)',
+      html: "A 12-hour clock shows " + num(h + " o'clock") + ". What time will it show after " + num(N + ' hours') + '?',
+      answer: t(ans),
+      wrong: [t(ans + 1), t(ans - 1), t(ans + 2), t(r === 0 ? 12 : r), t(h + N)],
+      steps: [
+        'A 12-hour clock repeats every 12 hours, so we work in mod 12.',
+        N + ' mod 12 = ' + r,
+        'Move ' + r + ' hours forward from ' + h + ': ' + h + ' + ' + r + ' = ' + s,
+        s > 12 ? s + ' is more than 12, so ' + s + ' − 12 = ' + ans : s + ' is not more than 12, so the time is ' + ans
+      ]
+    };
+  }
+
+  var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  function modDay(){
+    var di = randInt(0, 6), N = randInt(100, 900), r = N % 7;
+    function dy(k){ return DAYS[((k % 7) + 7) % 7]; }
+    return {
+      eyebrow: EY_MOD + ' (DAYS OF THE WEEK)',
+      html: 'Today is ' + num(DAYS[di]) + '. What day of the week will it be ' + num(N + ' days') + ' from today?',
+      answer: dy(di + r),
+      wrong: [dy(di + r + 1), dy(di + r - 1), dy(di + r + 2), dy(di + r + 3)],
+      steps: [
+        'Days of the week repeat every 7 days, so we work in mod 7.',
+        N + ' mod 7 = ' + r,
+        'Count ' + r + ' day(s) forward from ' + DAYS[di] + ': ' + dy(di + r)
+      ]
+    };
+  }
+
+  function modPow(){
+    var n = pick([5, 7, 9, 11, 13]), a, ra;
+    do { a = randInt(3, n + 14); ra = a % n; } while(ra < 2);
+    var k = randInt(4, 7), r = ra;
+    var steps = ['Reduce the base first: ' + a + ' ≡ ' + ra + ' (mod ' + n + ')', a + '^{1} ≡ ' + ra];
+    for(var i = 2; i <= k; i++){
+      var prev = r;
+      r = (prev * ra) % n;
+      steps.push(a + '^{' + i + '} ≡ ' + prev + ' × ' + ra + ' = ' + (prev * ra) + ' ≡ ' + r + ' (mod ' + n + ')');
+    }
+    return {
+      eyebrow: EY_MOD + ' (POWERS)',
+      html: 'Find ' + num(a + '^{' + k + '} mod ' + n),
+      answer: String(r),
+      wrong: [(ra * k) % n, (ra + k) % n, pm(r + 1, n), pm(r - 1, n), (a * k) % n],
+      steps: steps
+    };
+  }
+
+  // =====================================================
+  //  INDICES: MULTIPLICATION LAW  (a^m × a^n = a^(m+n))
+  // =====================================================
+  var EY_MUL = 'INDICES — MULTIPLICATION LAW';
+
+  function mulLaw1(){
+    var b = randInt(2, 9), m = randInt(2, 8), n = randInt(2, 8), p = randInt(2, 8), S = m + n + p;
+    return {
+      eyebrow: EY_MUL,
+      html: 'Simplify ' + num(b + '^{' + m + '} × ' + b + '^{' + n + '} × ' + b + '^{' + p + '}') + ', leaving your answer in index form.',
+      answer: b + '^{' + S + '}',
+      wrong: [b + '^{' + (S + 1) + '}', b + '^{' + (S - 1) + '}', b + '^{' + (m * n * p) + '}', (b * b) + '^{' + S + '}'],
+      steps: [
+        'Same base, so ADD the indices: a^{m} × a^{n} = a^{m + n}',
+        m + ' + ' + n + ' + ' + p + ' = ' + S
+      ]
+    };
+  }
+
+  function mulLaw2(){
+    var b = randInt(2, 9), x, u, v, w;
+    do { x = randInt(2, 9); u = randInt(-3, 5); v = randInt(-3, 5); w = 2 * x + u + v; } while(w < 2);
+    return {
+      eyebrow: EY_MUL,
+      html: 'Find the value of x: ' + num(b + '^{' + lin(1, u) + '} × ' + b + '^{' + lin(1, v) + '} = ' + b + '^{' + w + '}'),
+      answer: String(x),
+      wrong: [w - u - v, x + 1, x - 1, x + 2, w],
+      steps: [
+        'Same base on the left, so ADD the indices:',
+        '(' + lin(1, u) + ') + (' + lin(1, v) + ') = ' + w,
+        lin(2, u + v) + ' = ' + w,
+        '2x = ' + w + ' − (' + (u + v) + ') = ' + (w - u - v),
+        'x = ' + (w - u - v) + ' ÷ 2 = ' + x
+      ]
+    };
+  }
+
+  function mulLaw3(){
+    var c1 = randInt(2, 9), c2 = randInt(2, 9), m = randInt(1, 6), n = randInt(1, 6), p = randInt(1, 6), q = randInt(1, 6);
+    return {
+      eyebrow: EY_MUL,
+      html: 'Simplify ' + num('(' + c1 + pw('x', m) + pw('y', n) + ') × (' + c2 + pw('x', p) + pw('y', q) + ')'),
+      answer: (c1 * c2) + pw('x', m + p) + pw('y', n + q),
+      wrong: [
+        (c1 + c2) + pw('x', m + p) + pw('y', n + q),
+        (c1 * c2) + pw('x', m * p) + pw('y', n * q),
+        (c1 * c2) + pw('x', m + p) + pw('y', n * q),
+        (c1 * c2) + pw('x', m * p) + pw('y', n + q),
+        (c1 * c2) + pw('x', m + p + 1) + pw('y', n + q)
+      ],
+      steps: [
+        'MULTIPLY the coefficients: ' + c1 + ' × ' + c2 + ' = ' + (c1 * c2),
+        'ADD the indices of x: ' + m + ' + ' + p + ' = ' + (m + p),
+        'ADD the indices of y: ' + n + ' + ' + q + ' = ' + (n + q)
+      ]
+    };
+  }
+
+  function mulLaw4(){
+    var pr = pick([[2, 2], [2, 3], [3, 2], [3, 3]]), b = pr[0], k = pr[1], B = pow(b, k);
+    var x = randInt(2, 6), u = randInt(-2, 3), v = randInt(-2, 3);
+    var w = (1 + k) * x + u + k * v, c = u + k * v, rhs = w - c;
+    return {
+      eyebrow: EY_MUL + ' (CHANGING THE BASE)',
+      html: 'Find the value of x: ' + num(b + '^{' + lin(1, u) + '} × ' + B + '^{' + lin(1, v) + '} = ' + b + '^{' + w + '}'),
+      answer: String(x),
+      wrong: [rhs, x + 1, x - 1, x + 2, w],
+      steps: [
+        'Make the bases the same: ' + B + ' = ' + b + '^{' + k + '}',
+        '(' + b + '^{' + k + '})^{' + lin(1, v) + '} = ' + b + '^{' + k + '(' + lin(1, v) + ')}',
+        'ADD the indices: (' + lin(1, u) + ') + ' + k + '(' + lin(1, v) + ') = ' + w,
+        lin(1 + k, c) + ' = ' + w,
+        (1 + k) + 'x = ' + w + ' − (' + c + ') = ' + rhs,
+        'x = ' + rhs + ' ÷ ' + (1 + k) + ' = ' + x
+      ]
+    };
+  }
+
+  // =====================================================
+  //  INDICES: DIVISION LAW  (a^m ÷ a^n = a^(m−n))
+  // =====================================================
+  var EY_DIV = 'INDICES — DIVISION LAW';
+
+  function divLaw1(){
+    var b = randInt(2, 9), m = randInt(13, 20), n = randInt(2, 4), p = randInt(2, 4), e = m - n - p;
+    return {
+      eyebrow: EY_DIV,
+      html: 'Simplify ' + num(b + '^{' + m + '} ÷ ' + b + '^{' + n + '} ÷ ' + b + '^{' + p + '}') + ', leaving your answer in index form.',
+      answer: b + '^{' + e + '}',
+      wrong: [b + '^{' + (m - n + p) + '}', b + '^{' + (m - n * p) + '}', b + '^{' + (m + n + p) + '}', b + '^{' + (e + 1) + '}'],
+      steps: [
+        'Same base, so SUBTRACT the indices: a^{m} ÷ a^{n} = a^{m − n}',
+        'Work from left to right: ' + m + ' − ' + n + ' = ' + (m - n),
+        (m - n) + ' − ' + p + ' = ' + e
+      ]
+    };
+  }
+
+  function divLaw2(){
+    var b = randInt(2, 9), c, x, u, v, w;
+    do { c = pick([2, 3]); x = randInt(2, 8); u = randInt(-3, 5); v = randInt(-3, 5); w = (c - 1) * x + u - v; } while(w < 2);
+    var rhs = w - (u - v);
+    return {
+      eyebrow: EY_DIV,
+      html: 'Find the value of x: ' + num(b + '^{' + lin(c, u) + '} ÷ ' + b + '^{' + lin(1, v) + '} = ' + b + '^{' + w + '}'),
+      answer: String(x),
+      wrong: [rhs, x + 1, x - 1, x + 2, w],
+      steps: [
+        'Same base on the left, so SUBTRACT the indices:',
+        '(' + lin(c, u) + ') − (' + lin(1, v) + ') = ' + w,
+        lin(c - 1, u - v) + ' = ' + w,
+        lin(c - 1, 0) + ' = ' + w + ' − (' + (u - v) + ') = ' + rhs,
+        'x = ' + rhs + ' ÷ ' + (c - 1) + ' = ' + x
+      ]
+    };
+  }
+
+  function divLaw3(){
+    var c2 = randInt(2, 6), k = randInt(2, 6), c1 = c2 * k;
+    var p = randInt(1, 4), q = randInt(1, 4), m = p + randInt(1, 5), n = q + randInt(1, 5);
+    return {
+      eyebrow: EY_DIV,
+      html: 'Simplify ' + num('(' + c1 + pw('x', m) + pw('y', n) + ') ÷ (' + c2 + pw('x', p) + pw('y', q) + ')'),
+      answer: k + pw('x', m - p) + pw('y', n - q),
+      wrong: [
+        (c1 - c2) + pw('x', m - p) + pw('y', n - q),
+        k + pw('x', m + p) + pw('y', n + q),
+        k + pw('x', m - p) + pw('y', n + q),
+        k + pw('x', m / 1 + 1 - p) + pw('y', n - q),
+        c2 + pw('x', m - p) + pw('y', n - q)
+      ],
+      steps: [
+        'DIVIDE the coefficients: ' + c1 + ' ÷ ' + c2 + ' = ' + k,
+        'SUBTRACT the indices of x: ' + m + ' − ' + p + ' = ' + (m - p),
+        'SUBTRACT the indices of y: ' + n + ' − ' + q + ' = ' + (n - q)
+      ]
+    };
+  }
+
+  function divLaw4(){
+    var b = randInt(2, 5), e = randInt(2, 6), p = randInt(2, 6);
+    var m = randInt(2, e + p - 2), n = e + p - m;
+    return {
+      eyebrow: EY_DIV + ' (WITH MULTIPLICATION)',
+      html: 'Evaluate ' + num('(' + b + '^{' + m + '} × ' + b + '^{' + n + '}) ÷ ' + b + '^{' + p + '}'),
+      answer: String(pow(b, e)),
+      wrong: [pow(b, e + 1), pow(b, e - 1), pow(b, e + 2), b * e],
+      steps: [
+        'Bracket first (multiplication law, ADD indices): ' + m + ' + ' + n + ' = ' + (m + n) + ', so ' + b + '^{' + (m + n) + '}',
+        'Then divide (division law, SUBTRACT indices): ' + (m + n) + ' − ' + p + ' = ' + e,
+        b + '^{' + e + '} = ' + pow(b, e)
+      ]
+    };
+  }
+
+  // =====================================================
+  //  INDICES: PRODUCT / POWER LAW  ((a^m)^n = a^(mn), (ab)^n = a^n b^n)
+  // =====================================================
+  var EY_PRO = 'INDICES — PRODUCT (POWER) LAW';
+
+  function proLaw1(){
+    var b = randInt(2, 9), m = randInt(2, 5), n = randInt(2, 4), p = randInt(2, m * n - 1), e = m * n - p;
+    return {
+      eyebrow: EY_PRO,
+      html: 'Simplify ' + num('(' + b + '^{' + m + '})^{' + n + '} ÷ ' + b + '^{' + p + '}') + ', leaving your answer in index form.',
+      answer: b + '^{' + e + '}',
+      wrong: [b + '^{' + (m + n - p) + '}', b + '^{' + (m * n + p) + '}', b + '^{' + (e + 1) + '}', b + '^{' + (e - 1) + '}'],
+      steps: [
+        'Power of a power, MULTIPLY the indices: (a^{m})^{n} = a^{mn}',
+        m + ' × ' + n + ' = ' + (m * n) + ', so the top becomes ' + b + '^{' + (m * n) + '}',
+        'Divide, SUBTRACT the indices: ' + (m * n) + ' − ' + p + ' = ' + e
+      ]
+    };
+  }
+
+  function proLaw2(){
+    var b = randInt(2, 9), k = randInt(2, 4), x, u, v, w;
+    do { x = randInt(2, 6); u = randInt(1, 6); v = randInt(-2, 3); w = k * (x + v) + u; } while(w < 2);
+    var c = k * v + u, rhs = w - c;
+    return {
+      eyebrow: EY_PRO,
+      html: 'Find the value of x: ' + num('(' + b + '^{' + lin(1, v) + '})^{' + k + '} × ' + b + '^{' + u + '} = ' + b + '^{' + w + '}'),
+      answer: String(x),
+      wrong: [rhs, x + 1, x - 1, x + 2, w],
+      steps: [
+        'Power of a power, MULTIPLY the indices: ' + k + '(' + lin(1, v) + ')',
+        'Same base, ADD the indices: ' + k + '(' + lin(1, v) + ') + ' + u + ' = ' + w,
+        lin(k, c) + ' = ' + w,
+        k + 'x = ' + w + ' − (' + c + ') = ' + rhs,
+        'x = ' + rhs + ' ÷ ' + k + ' = ' + x
+      ]
+    };
+  }
+
+  function proLaw3(){
+    var c = randInt(2, 4), k = randInt(2, 3), m = randInt(1, 4), n = randInt(1, 4);
+    return {
+      eyebrow: EY_PRO,
+      html: 'Simplify ' + num('(' + c + pw('x', m) + pw('y', n) + ')^{' + k + '}'),
+      answer: pow(c, k) + pw('x', m * k) + pw('y', n * k),
+      wrong: [
+        (c * k) + pw('x', m * k) + pw('y', n * k),
+        pow(c, k) + pw('x', m + k) + pw('y', n + k),
+        pow(c, k) + pw('x', m * k) + pw('y', n),
+        pow(c, k) + pw('x', m) + pw('y', n * k),
+        (c + k) + pw('x', m * k) + pw('y', n * k)
+      ],
+      steps: [
+        'Raise EVERY part of the bracket to the power ' + k + ':',
+        'Coefficient: ' + c + '^{' + k + '} = ' + pow(c, k),
+        'x: (x^{' + m + '})^{' + k + '} = x^{' + (m * k) + '}',
+        'y: (y^{' + n + '})^{' + k + '} = y^{' + (n * k) + '}'
+      ]
+    };
+  }
+
+  function proLaw4(){
+    var L = pick(['a', 'x', 'm', 't']), m = randInt(2, 4), k = randInt(2, 4), p = randInt(2, 4), l = randInt(2, 3), q = randInt(2, 5);
+    var e = m * k + p * l - q;
+    return {
+      eyebrow: EY_PRO + ' (MIXED)',
+      html: 'Simplify ' + num('(' + L + '^{' + m + '})^{' + k + '} × (' + L + '^{' + p + '})^{' + l + '} ÷ ' + L + '^{' + q + '}'),
+      answer: pw(L, e),
+      wrong: [pw(L, e + 1), pw(L, e - 1), pw(L, m + k + p + l - q), pw(L, m * k + p * l + q)],
+      steps: [
+        'Power of a power, MULTIPLY: (' + L + '^{' + m + '})^{' + k + '} = ' + L + '^{' + (m * k) + '} and (' + L + '^{' + p + '})^{' + l + '} = ' + L + '^{' + (p * l) + '}',
+        'Multiplication, ADD: ' + (m * k) + ' + ' + (p * l) + ' = ' + (m * k + p * l),
+        'Division, SUBTRACT: ' + (m * k + p * l) + ' − ' + q + ' = ' + e
+      ]
+    };
+  }
+
+  function proLaw5(){
+    var pr = pick([[2, 3], [2, 5], [3, 5]]), b1 = pr[0], b2 = pr[1];
+    var m = randInt(1, 3), n = randInt(1, 3), k = randInt(2, 3);
+    var v1 = pow(b1, m * k), v2 = pow(b2, n * k), v = v1 * v2;
+    return {
+      eyebrow: EY_PRO + ' (EVALUATE)',
+      html: 'Evaluate ' + num('(' + b1 + '^{' + m + '} × ' + b2 + '^{' + n + '})^{' + k + '}'),
+      answer: String(v),
+      wrong: [pow(b1, m * k) * pow(b2, n), (pow(b1, m) * pow(b2, n)) * k, pow(b1, m + k) * pow(b2, n + k), pow(b1, m) * pow(b2, n * k)],
+      steps: [
+        'Raise each factor in the bracket to the power ' + k + ' (multiply the indices):',
+        b1 + '^{' + (m * k) + '} × ' + b2 + '^{' + (n * k) + '}',
+        b1 + '^{' + (m * k) + '} = ' + v1 + ' and ' + b2 + '^{' + (n * k) + '} = ' + v2,
+        v1 + ' × ' + v2 + ' = ' + v
+      ]
+    };
+  }
+
+  function proLaw6(){
+    var k, l, p, q, m, n, ex, ey;
+    do {
+      k = randInt(2, 3); l = randInt(2, 3); p = randInt(1, 3); q = randInt(1, 3);
+      m = randInt(2, 5); n = randInt(2, 5);
+      ex = m * k - p * l; ey = n * k - q * l;
+    } while(ex < 1 || ey < 1);
+    return {
+      eyebrow: EY_PRO + ' (MIXED)',
+      html: 'Simplify ' + num('(x^{' + m + '}y^{' + n + '})^{' + k + '} ÷ (x^{' + p + '}y^{' + q + '})^{' + l + '}'),
+      answer: pw('x', ex) + pw('y', ey),
+      wrong: [
+        pw('x', m * k + p * l) + pw('y', n * k + q * l),
+        pw('x', ex + 1) + pw('y', ey),
+        pw('x', ex) + pw('y', ey + 1),
+        pw('x', (m - p) * k) + pw('y', (n - q) * l),
+        pw('x', m * k - p) + pw('y', n * k - q)
+      ],
+      steps: [
+        'Top: (x^{' + m + '}y^{' + n + '})^{' + k + '} = x^{' + (m * k) + '}y^{' + (n * k) + '}',
+        'Bottom: (x^{' + p + '}y^{' + q + '})^{' + l + '} = x^{' + (p * l) + '}y^{' + (q * l) + '}',
+        'Divide, SUBTRACT the indices of x: ' + (m * k) + ' − ' + (p * l) + ' = ' + ex,
+        'SUBTRACT the indices of y: ' + (n * k) + ' − ' + (q * l) + ' = ' + ey
+      ]
+    };
+  }
+
+  // =====================================================
+  //  INDICES: NEGATIVE INDEX  (a^−n = 1 / a^n)
+  // =====================================================
+  var EY_NEG = 'INDICES — NEGATIVE INDEX';
+
+  function negLaw1(){
+    var b = randInt(2, 5), n = randInt(2, 4), v = pow(b, n);
+    return {
+      eyebrow: EY_NEG,
+      html: 'Evaluate ' + num(b + '^{-' + n + '}'),
+      answer: '1/' + v,
+      wrong: ['-' + v, '1/' + (b * n), '-1/' + v, String(v)],
+      steps: [
+        'A negative index means “1 over”: a^{-n} = 1 / a^{n}',
+        b + '^{-' + n + '} = 1 / ' + b + '^{' + n + '}',
+        b + '^{' + n + '} = ' + v + ', so the answer is 1/' + v
+      ]
+    };
+  }
+
+  function negLaw2(){
+    var pr = pick([[2, 3], [3, 4], [2, 5], [3, 5], [4, 5], [3, 2], [5, 2]]), p = pr[0], q = pr[1], n = randInt(2, 3);
+    return {
+      eyebrow: EY_NEG,
+      html: 'Evaluate ' + num('(' + p + '/' + q + ')^{-' + n + '}') + ' as a fraction.',
+      answer: pow(q, n) + '/' + pow(p, n),
+      wrong: [pow(p, n) + '/' + pow(q, n), (q * n) + '/' + (p * n), '-' + pow(p, n) + '/' + pow(q, n), '-' + pow(q, n) + '/' + pow(p, n)],
+      steps: [
+        'A negative index flips the fraction: (a/b)^{-n} = (b/a)^{n}',
+        '(' + p + '/' + q + ')^{-' + n + '} = (' + q + '/' + p + ')^{' + n + '}',
+        'Raise the top and bottom to the power ' + n + ': ' + pow(q, n) + '/' + pow(p, n)
+      ]
+    };
+  }
+
+  function negLaw3(){
+    var b = randInt(2, 5), n = randInt(2, 4), u = randInt(1, 4), v = pow(b, n), x = -n - u;
+    return {
+      eyebrow: EY_NEG + ' (SOLVING)',
+      html: 'Find the value of x: ' + num(b + '^{' + lin(1, u) + '} = 1/' + v),
+      answer: String(x),
+      wrong: [-n, -n + u, n + u, n - u],
+      steps: [
+        v + ' = ' + b + '^{' + n + '}, so 1/' + v + ' = ' + b + '^{-' + n + '}',
+        'Same base, so equate the indices: ' + lin(1, u) + ' = -' + n,
+        'x = -' + n + ' − ' + u + ' = ' + x
+      ]
+    };
+  }
+
+  function negLaw4(){
+    var c = randInt(2, 5), m = randInt(1, 4), n = randInt(1, 5), p = randInt(1, 4);
+    return {
+      eyebrow: EY_NEG + ' (POSITIVE INDICES ONLY)',
+      html: 'Express ' + num(c + 'x^{-' + m + '}y^{' + n + '}z^{-' + p + '}') + ' with positive indices only.',
+      answer: c + pw('y', n) + '/' + pw('x', m) + pw('z', p),
+      wrong: [
+        c + pw('x', m) + pw('y', n) + pw('z', p),
+        c + pw('x', m) + pw('z', p) + '/' + pw('y', n),
+        '1/' + c + pw('x', m) + pw('y', n) + pw('z', p),
+        c + pw('y', n) + pw('z', p) + '/' + pw('x', m)
+      ],
+      steps: [
+        'A negative index moves that letter to the other side of the fraction line.',
+        'x^{-' + m + '} moves to the bottom as x^{' + m + '}',
+        'z^{-' + p + '} moves to the bottom as z^{' + p + '}',
+        'The coefficient ' + c + ' and y^{' + n + '} have positive indices, so they stay on top.'
+      ]
+    };
+  }
+
+  function negLaw5(){
+    var b, m, n, p, e;
+    do { b = randInt(2, 5); m = randInt(1, 6); n = randInt(1, 6); p = randInt(1, 5); e = m - n + p; } while(e < 2 || e > 6);
+    return {
+      eyebrow: EY_NEG + ' (WITH OTHER LAWS)',
+      html: 'Evaluate ' + num(b + '^{' + m + '} × ' + b + '^{-' + n + '} ÷ ' + b + '^{-' + p + '}'),
+      answer: String(pow(b, e)),
+      wrong: [pow(b, e + 1), pow(b, e - 1), pow(b, e + 2), b * e],
+      steps: [
+        'Multiply, ADD the indices: ' + m + ' + (-' + n + ') = ' + (m - n),
+        'Divide, SUBTRACT the indices: ' + (m - n) + ' − (-' + p + ') = ' + (m - n) + ' + ' + p + ' = ' + e,
+        b + '^{' + e + '} = ' + pow(b, e)
+      ]
+    };
+  }
+
+  function negLaw6(){
+    var pr = pick([[2, 3], [3, 4], [2, 5], [3, 5], [4, 5]]), p = pr[0], q = pr[1], n = randInt(2, 4);
+    return {
+      eyebrow: EY_NEG + ' (SOLVING)',
+      html: 'Find the value of x: ' + num('(' + p + '/' + q + ')^{x} = ' + pow(q, n) + '/' + pow(p, n)),
+      answer: String(-n),
+      wrong: [n, -(n + 1), -(n - 1), 1 - n],
+      steps: [
+        pow(q, n) + '/' + pow(p, n) + ' = (' + q + '/' + p + ')^{' + n + '}',
+        '(' + q + '/' + p + ') is the flip of (' + p + '/' + q + '), so (' + q + '/' + p + ')^{' + n + '} = (' + p + '/' + q + ')^{-' + n + '}',
+        'Equate the indices: x = -' + n
+      ]
+    };
+  }
+
+  function negLaw7(){
+    var b = randInt(2, 6), n = randInt(2, 4), v = pow(b, n);
+    return {
+      eyebrow: EY_NEG,
+      html: 'Evaluate ' + num('(1/' + b + ')^{-' + n + '}'),
+      answer: String(v),
+      wrong: ['1/' + v, '-' + v, String(b * n), '1/' + (b * n)],
+      steps: [
+        'A negative index flips the fraction: (1/' + b + ')^{-' + n + '} = (' + b + '/1)^{' + n + '}',
+        b + '^{' + n + '} = ' + v
+      ]
+    };
+  }
+
+  // =====================================================
+  //  INDICES: ZERO LAW  (a^0 = 1, where a ≠ 0)
+  // =====================================================
+  var EY_ZER = 'INDICES — ZERO LAW';
+
+  function zeroLaw1(){
+    var a = randInt(2, 99), b = randInt(2, 99), c = randInt(2, 99), k = randInt(3, 9), m = randInt(3, 9), n = randInt(2, 8);
+    var ans = k + m - n;
+    return {
+      eyebrow: EY_ZER,
+      html: 'Evaluate ' + num(k + ' × ' + a + '^{0} + ' + m + ' × ' + b + '^{0} − ' + n + ' × ' + c + '^{0}'),
+      answer: String(ans),
+      wrong: [0, k + m + n, k * m - n, k + m, ans + 1, -ans],
+      steps: [
+        'Zero law: any non-zero number to the power 0 equals 1.',
+        a + '^{0} = 1, ' + b + '^{0} = 1, ' + c + '^{0} = 1',
+        k + ' × 1 + ' + m + ' × 1 − ' + n + ' × 1 = ' + k + ' + ' + m + ' − ' + n + ' = ' + ans
+      ]
+    };
+  }
+
+  function zeroLaw2(){
+    var a = randInt(3, 9), b = randInt(3, 9), c = randInt(2, 8), q = randInt(2, 9), r = randInt(2, 9), s = randInt(2, 9), t = randInt(2, 9);
+    var ans = a + b - c;
+    return {
+      eyebrow: EY_ZER + ' (BRACKETS)',
+      html: 'Evaluate ' + num(a + '(' + q + 'x^{2}y)^{0} + ' + b + '(' + r + 'p − ' + s + 'q)^{0} − ' + c + '(' + t + 'm^{3})^{0}') + ', assuming no bracket equals zero.',
+      answer: String(ans),
+      wrong: [a + b + c, a + b, a * b - c, a - b + c, 0],
+      steps: [
+        'Zero law: anything (not zero) to the power 0 equals 1, even a long bracket.',
+        'Each bracket^{0} = 1',
+        a + ' × 1 + ' + b + ' × 1 − ' + c + ' × 1 = ' + a + ' + ' + b + ' − ' + c + ' = ' + ans
+      ]
+    };
+  }
+
+  function zeroLaw3(){
+    var b = randInt(2, 9), k = randInt(2, 5), x = randInt(2, 8), m = k * x;
+    return {
+      eyebrow: EY_ZER + ' (SOLVING)',
+      html: 'Find the value of x: ' + num(b + '^{' + lin(k, -m) + '} = 1'),
+      answer: String(x),
+      wrong: [m, x + 1, x - 1, k, x + 2],
+      steps: [
+        'Zero law: ' + b + '^{0} = 1, so the index must be 0.',
+        lin(k, -m) + ' = 0',
+        k + 'x = ' + m,
+        'x = ' + m + ' ÷ ' + k + ' = ' + x
+      ]
+    };
+  }
+
+  function zeroLaw4(){
+    var b = randInt(2, 9), m = randInt(2, 9), k = randInt(3, 9), n = randInt(2, 9), c = randInt(2, 40);
+    var ans = k + n;
+    return {
+      eyebrow: EY_ZER + ' (WITH DIVISION LAW)',
+      html: 'Evaluate ' + num(k + ' × (' + b + '^{' + m + '} ÷ ' + b + '^{' + m + '}) + ' + n + ' × ' + c + '^{0}'),
+      answer: String(ans),
+      wrong: [k, n, 0, k * n, ans + 1],
+      steps: [
+        'Division law: ' + b + '^{' + m + '} ÷ ' + b + '^{' + m + '} = ' + b + '^{' + m + ' − ' + m + '} = ' + b + '^{0} = 1',
+        'Zero law: ' + c + '^{0} = 1',
+        k + ' × 1 + ' + n + ' × 1 = ' + ans
+      ]
+    };
+  }
+
+  function zeroLaw5(){
+    var p = randInt(2, 5), x = -randInt(2, 7), q = -p * x;
+    return {
+      eyebrow: EY_ZER + ' (SOLVING)',
+      html: 'Given that ' + num('a^{' + lin(p, q) + '} = 1') + ' where a is not 0, 1 or −1, find x.',
+      answer: String(x),
+      wrong: [-x, x + 1, x - 1, q, x - 2],
+      steps: [
+        'Zero law: a^{0} = 1, so the index must be 0.',
+        lin(p, q) + ' = 0',
+        p + 'x = -' + q,
+        'x = -' + q + ' ÷ ' + p + ' = ' + x
+      ]
+    };
+  }
+
+  function zeroLaw6(){
+    var b = randInt(2, 9), m = randInt(2, 7), c = randInt(2, 30), k = randInt(4, 9), d = randInt(2, 9), p = randInt(2, 7), n = randInt(2, 3);
+    var ans = 1 + k - n;
+    return {
+      eyebrow: EY_ZER + ' (WITH NEGATIVE INDEX)',
+      html: 'Evaluate ' + num(b + '^{' + m + '} × ' + b + '^{-' + m + '} + ' + k + ' × ' + c + '^{0} − ' + n + ' × (' + d + '^{' + p + '} ÷ ' + d + '^{' + p + '})'),
+      answer: String(ans),
+      wrong: [k - n, 1 + k + n, k + n, 0, 1 + k * n],
+      steps: [
+        b + '^{' + m + '} × ' + b + '^{-' + m + '} = ' + b + '^{' + m + ' + (-' + m + ')} = ' + b + '^{0} = 1',
+        c + '^{0} = 1',
+        d + '^{' + p + '} ÷ ' + d + '^{' + p + '} = ' + d + '^{0} = 1',
+        '1 + ' + k + ' × 1 − ' + n + ' × 1 = ' + ans
+      ]
+    };
+  }
+
+  // =====================================================
+  //  BUILD THE 50 QUESTIONS (15 modular + 35 indices)
+  // =====================================================
+  var PLAN = [
+    // 15 modular arithmetic
+    modAdd, modMul, modSub, modLin, modMulSolve, modCombo, modClock, modDay, modPow,
+    modSub, modMulSolve, modCombo, modPow, modLin, modMul,
+    // 7 multiplication law
+    mulLaw1, mulLaw2, mulLaw3, mulLaw4, mulLaw2, mulLaw3, mulLaw4,
+    // 7 division law
+    divLaw1, divLaw2, divLaw3, divLaw4, divLaw2, divLaw3, divLaw4,
+    // 7 product (power) law
+    proLaw1, proLaw2, proLaw3, proLaw4, proLaw5, proLaw6, proLaw2,
+    // 7 negative index
+    negLaw1, negLaw2, negLaw3, negLaw4, negLaw5, negLaw6, negLaw7,
+    // 7 zero law
+    zeroLaw1, zeroLaw2, zeroLaw3, zeroLaw4, zeroLaw5, zeroLaw6, zeroLaw3
+  ];
 
   function generateQuestions(){
-    var pool = [];
-    var seen = {};
-
-    while(pool.filter(function(q){return q.type==='int';}).length < 35){
-      var base = randInt(2,9);
-      var val = randInt(9, 620);
-      var key = 'i'+val+'_'+base;
-      if(seen[key]) continue;
-      seen[key] = true;
-      pool.push({ type:'int', intPart: val, base: base });
-    }
-
-    while(pool.filter(function(q){return q.type==='decimal';}).length < 15){
-      var base2 = randInt(2,9);
-      var ip = randInt(1, 350);
-      var fracDigitsLen = randInt(2,3);
-      var fracPart = randInt(1, Math.pow(10, fracDigitsLen) - 1);
-      var fracStr = fracPart.toString();
-      while(fracStr.length < fracDigitsLen) fracStr = '0' + fracStr;
-      var denom = Math.pow(10, fracDigitsLen);
-      var key2 = 'd'+ip+'.'+fracStr+'_'+base2;
-      if(seen[key2]) continue;
-      seen[key2] = true;
-      pool.push({
-        type:'decimal', intPart: ip, base: base2,
-        fracNumerator: parseInt(fracStr,10), fracDenominator: denom,
-        fracDisplay: fracStr
-      });
-    }
-
-    return shuffle(pool);
-  }
-
-  function mutateDigits(correct, base){
-    var chars = correct.split('');
-    var idxs = [];
-    for(var i=0;i<chars.length;i++){ if(chars[i] !== '.') idxs.push(i); }
-    var numMut = idxs.length > 3 ? (Math.random() < 0.5 ? 1 : 2) : 1;
-    var chosen = shuffle(idxs).slice(0, numMut);
-    chosen.forEach(function(i){
-      var cur = chars[i];
-      var nd;
-      var guard = 0;
-      do { nd = randInt(0, base-1).toString(); guard++; } while(nd === cur && guard < 20);
-      chars[i] = nd;
+    var seen = {}, out = [];
+    PLAN.forEach(function(fn){
+      var q, tries = 0;
+      do { q = fn(); tries++; } while(seen[q.html] && tries < 80);
+      seen[q.html] = true;
+      out.push(q);
     });
-    return chars.join('');
+    return shuffle(out);
   }
 
-  function buildOptions(correct, base){
-    var opts = [correct];
-    var guard = 0;
-    while(opts.length < 4 && guard < 60){
-      guard++;
-      var cand = mutateDigits(correct, base);
-      if(opts.indexOf(cand) === -1) opts.push(cand);
-    }
-    // fallback fill if collisions kept happening
-    while(opts.length < 4){
-      var extra = correct + randInt(0,base-1).toString();
-      if(opts.indexOf(extra) === -1) opts.push(extra);
+  function bumpFirstNumber(s, k){
+    return s.replace(/\d+/, function(m){ return String(parseInt(m, 10) + k); });
+  }
+
+  function buildOptions(ans, wrong){
+    var opts = [ans], used = {};
+    used[ans] = true;
+    wrong.forEach(function(w){
+      w = String(w);
+      if(!used[w] && opts.length < 4){ used[w] = true; opts.push(w); }
+    });
+    var bump = 1;
+    while(opts.length < 4 && bump < 30){
+      var c = bumpFirstNumber(ans, bump);
+      bump++;
+      if(!used[c]){ used[c] = true; opts.push(c); }
     }
     return shuffle(opts);
   }
 
-  // ---------- Build full quiz data ----------
-
   var questions = generateQuestions().map(function(q){
-    var conv = buildConversion(q);
-    var options = buildOptions(conv.answer, q.base);
     return {
-      raw: q,
-      conv: conv,
-      options: options,
+      data: q,
+      options: buildOptions(q.answer, q.wrong),
       answered: false,
       selected: null,
       correct: false
@@ -585,37 +1176,27 @@
     return Math.round((correctCount() / ac) * 100);
   }
 
-  function questionPrompt(q){
-    if(q.raw.type === 'int'){
-      return { eyebrow: 'WHOLE NUMBER CONVERSION',
-        html: 'Convert <span class="num">' + q.raw.intPart + '₁₀</span> to base <span class="num">' + q.raw.base + '</span>' };
-    } else {
-      return { eyebrow: 'DECIMAL NUMBER CONVERSION (' + FRAC_PLACES + ' d.p.)',
-        html: 'Convert <span class="num">' + q.raw.intPart + '.' + q.raw.fracDisplay + '₁₀</span> to base <span class="num">' + q.raw.base + '</span>' };
-    }
-  }
-
   function renderQuestion(){
     var q = questions[currentIndex];
-    qCounter.textContent = 'Question ' + (currentIndex+1) + ' of ' + TOTAL;
+    qCounter.textContent = 'Question ' + (currentIndex + 1) + ' of ' + TOTAL;
     liveScore.textContent = 'Score: ' + livePercent() + '%';
-    progressFill.style.width = Math.max(2, Math.round(((currentIndex+1)/TOTAL)*100)) + '%';
+    progressFill.style.width = Math.max(2, Math.round(((currentIndex + 1) / TOTAL) * 100)) + '%';
 
-    var prompt = questionPrompt(q);
-    qTypeLabel.textContent = prompt.eyebrow;
-    qText.innerHTML = prompt.html + ' ?';
+    qTypeLabel.textContent = q.data.eyebrow;
+    qText.innerHTML = fmtHtml(q.data.html);
 
     optionsWrap.innerHTML = '';
-    var letters = ['A','B','C','D'];
+    var letters = ['A', 'B', 'C', 'D'];
     q.options.forEach(function(opt, i){
       var div = document.createElement('button');
       div.className = 'option';
       div.type = 'button';
-      div.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span>' + opt + '</span>';
+      div.dataset.val = opt;
+      div.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span>' + fmtHtml(opt) + '</span>';
       div.addEventListener('click', function(){ selectOption(q, opt, div); });
       if(q.answered){
         div.classList.add('locked');
-        if(opt === q.conv.answer) div.classList.add('reveal-correct');
+        if(opt === q.data.answer) div.classList.add('reveal-correct');
         if(opt === q.selected && !q.correct) div.classList.add('selected-wrong');
         if(opt === q.selected && q.correct) div.classList.add('selected-correct');
       }
@@ -638,7 +1219,7 @@
     if(q.answered) return;
     q.answered = true;
     q.selected = opt;
-    q.correct = (opt === q.conv.answer);
+    q.correct = (opt === q.data.answer);
 
     var opts = optionsWrap.querySelectorAll('.option');
     opts.forEach(function(o){ o.classList.add('locked'); });
@@ -648,8 +1229,7 @@
     } else {
       el.classList.add('selected-wrong');
       opts.forEach(function(o){
-        var label = o.querySelector('span:last-child');
-        if(label && label.textContent === q.conv.answer){
+        if(o.dataset.val === q.data.answer){
           o.classList.add('reveal-correct');
         }
       });
@@ -660,47 +1240,17 @@
     nextBtn.disabled = false;
   }
 
-  function fmt(n){
-    return (Math.round(n*10000)/10000).toString();
-  }
-
   function showFeedback(q){
     feedbackPanel.classList.remove('hidden');
     feedbackTitle.className = 'feedback-title ' + (q.correct ? 'correct' : 'wrong');
-    feedbackTitle.textContent = q.correct
+    feedbackTitle.innerHTML = q.correct
       ? '✓ Correct! Here is the full working:'
-      : '✗ Not quite — correct answer: ' + q.conv.answer + '. Here is the full working:';
+      : '✗ Not quite — correct answer: ' + fmtHtml(q.data.answer) + '. Here is the full working:';
 
-    var lines = [];
-    var intRes = q.conv.intRes;
-    var base = q.raw.base;
-
-    if(intRes.steps.length === 0){
-      lines.push('Whole number part is 0, so it stays 0 in base ' + base + '.');
-    } else {
-      lines.push('Whole number part — divide repeatedly by ' + base + ':');
-      intRes.steps.forEach(function(s){
-        lines.push(s.dividend + ' ÷ ' + base + ' = ' + s.quotient + '  remainder ' + s.remainder);
-      });
-      lines.push('Read remainders bottom → top: ' + intRes.digits);
-    }
-
-    var stepsHtml = lines.map(function(l){ return '<div class="step-line">' + l + '</div>'; }).join('');
-
-    if(q.raw.type === 'decimal'){
-      stepsHtml += '<hr>';
-      var fracRes = q.conv.fracRes;
-      var fracLines = ['Decimal part — multiply repeatedly by ' + base + ':'];
-      fracRes.steps.forEach(function(s){
-        var beforeDec = s.beforeNum / s.denominator;
-        var productDec = s.productNum / s.denominator;
-        fracLines.push(fmt(beforeDec) + ' × ' + base + ' = ' + fmt(productDec) + '  → digit ' + s.digit);
-      });
-      fracLines.push('Digits in order: ' + fracRes.digits);
-      stepsHtml += fracLines.map(function(l){ return '<div class="step-line">' + l + '</div>'; }).join('');
-    }
-
-    stepsHtml += '<div class="final-line">Final answer: ' + q.conv.answer + ' (base ' + base + ')</div>';
+    var stepsHtml = q.data.steps.map(function(l){
+      return '<div class="step-line">' + fmtHtml(l) + '</div>';
+    }).join('');
+    stepsHtml += '<div class="final-line">Final answer: ' + fmtHtml(q.data.answer) + '</div>';
     stepsWrap.innerHTML = stepsHtml;
   }
 
@@ -735,17 +1285,17 @@
 
     var msg;
     if(pct >= 85) msg = 'Outstanding work! 🌟';
-    else if(pct >= 70) msg = 'Great job — solid grasp of number bases!';
+    else if(pct >= 70) msg = 'Great job — solid grasp of modular arithmetic and indices!';
     else if(pct >= 50) msg = 'Good effort — a bit more practice will help.';
     else msg = 'Keep practicing — review the working on each question.';
     resultMsg.textContent = msg;
 
     sendBtn.onclick = function(){
-      var subject = 'Number Base System Quiz Result — ' + studentName;
+      var subject = 'Modular Arithmetic & Indices Quiz Result — ' + studentName;
       var body = 'Student: ' + studentName + '\n' +
                  'Score: ' + correct + ' / ' + TOTAL + '\n' +
                  'Percentage: ' + pct + '%\n' +
-                 'Topic: SS2 Mathematics — Number Base System';
+                 'Topic: SS1 Mathematics — Modular Arithmetic & Indices';
       var mailto = 'mailto:justzcontentz@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
       window.location.href = mailto;
     };
@@ -757,5 +1307,6 @@
 
 })();
 </script>
+
 </body>
 </html>
