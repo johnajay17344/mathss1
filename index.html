@@ -3,301 +3,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sweet Hope School — Number Base System Quiz</title>
+<title>Sweet Hope School — SS1 Mathematics Quiz</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-1:#0b1026;
-    --bg-2:#1b1464;
-    --bg-3:#2a0e4f;
-    --cyan:#22d3ee;
-    --pink:#ff6fa5;
-    --amber:#ffc857;
-    --green:#34d399;
-    --red:#fb7185;
-    --glass:rgba(255,255,255,0.08);
-    --glass-border:rgba(255,255,255,0.20);
-    --glass-strong:rgba(255,255,255,0.14);
-    --ink:#f4f6ff;
-    --ink-dim:#b9c0e6;
-    --radius-lg:26px;
-    --radius-md:16px;
-    --radius-sm:10px;
+    --bg-1:#0b1026; --bg-2:#1b1464; --bg-3:#2a0e4f;
+    --cyan:#22d3ee; --pink:#ff6fa5; --amber:#ffc857; --green:#34d399; --red:#fb7185;
+    --glass:rgba(255,255,255,0.08); --glass-border:rgba(255,255,255,0.20);
+    --ink:#f4f6ff; --ink-dim:#b9c0e6;
+    --radius-lg:26px; --radius-md:16px;
   }
-
   *{box-sizing:border-box;}
   html,body{height:100%;}
   body{
-    margin:0;
-    min-height:100vh;
-    font-family:'Inter',sans-serif;
-    color:var(--ink);
+    margin:0; min-height:100vh;
+    font-family:'Inter',sans-serif; color:var(--ink);
     background:
       radial-gradient(1100px 700px at 12% -10%, rgba(34,211,238,0.20), transparent 60%),
       radial-gradient(900px 700px at 110% 10%, rgba(255,111,165,0.20), transparent 60%),
       radial-gradient(1200px 900px at 50% 120%, rgba(255,200,87,0.14), transparent 60%),
       linear-gradient(160deg,var(--bg-1) 0%,var(--bg-2) 55%,var(--bg-3) 100%);
     background-attachment:fixed;
-    display:flex;
-    align-items:flex-start;
-    justify-content:center;
-    padding:32px 16px 60px;
-    position:relative;
-    overflow-x:hidden;
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:32px 16px 60px; position:relative; overflow-x:hidden;
   }
-
-  /* floating decorative blobs */
   .blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:0.35;z-index:0;pointer-events:none;}
   .blob-a{width:360px;height:360px;background:var(--cyan);top:-120px;left:-100px;animation:drift 22s ease-in-out infinite;}
   .blob-b{width:420px;height:420px;background:var(--pink);bottom:-160px;right:-140px;animation:drift 26s ease-in-out infinite reverse;}
   .blob-c{width:300px;height:300px;background:var(--amber);top:40%;right:-120px;animation:drift 30s ease-in-out infinite;}
-  @keyframes drift{
-    0%,100%{transform:translate(0,0) scale(1);}
-    50%{transform:translate(30px,-25px) scale(1.08);}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .blob{animation:none;}
-  }
+  @keyframes drift{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(30px,-25px) scale(1.08);}}
+  @media (prefers-reduced-motion: reduce){.blob{animation:none;}}
 
-  .app{
-    position:relative;
-    z-index:1;
-    width:100%;
-    max-width:680px;
-  }
+  .app{position:relative;z-index:1;width:100%;max-width:680px;}
 
-  /* Brand header */
-  .brand{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    margin-bottom:18px;
-    padding:0 4px;
-  }
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px;padding:0 4px;}
   .brand-mark{
     width:44px;height:44px;border-radius:14px;
     background:linear-gradient(135deg,var(--cyan),var(--pink));
     display:flex;align-items:center;justify-content:center;
     font-family:'Fredoka',sans-serif;font-weight:700;font-size:20px;color:#0b1026;
-    box-shadow:0 6px 18px rgba(34,211,238,0.35);
-    flex-shrink:0;
+    box-shadow:0 6px 18px rgba(34,211,238,0.35);flex-shrink:0;
   }
-  .brand-text .school{font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;letter-spacing:0.2px;}
+  .brand-text .school{font-family:'Fredoka',sans-serif;font-weight:600;font-size:17px;}
   .brand-text .dept{font-size:12.5px;color:var(--ink-dim);margin-top:1px;}
 
-  /* Glass panel */
   .glass{
-    background:var(--glass);
-    border:1px solid var(--glass-border);
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-    border-radius:var(--radius-lg);
-    box-shadow:0 20px 60px rgba(0,0,0,0.35);
-    padding:28px;
+    background:var(--glass); border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    border-radius:var(--radius-lg); box-shadow:0 20px 60px rgba(0,0,0,0.35); padding:28px;
   }
-  @media (max-width:480px){
-    .glass{padding:20px;border-radius:20px;}
-  }
+  @media (max-width:480px){.glass{padding:20px;border-radius:20px;}}
 
-  h1.hero-title{
-    font-family:'Fredoka',sans-serif;
-    font-weight:600;
-    font-size:clamp(24px,5vw,32px);
-    line-height:1.15;
-    margin:0 0 8px;
-  }
+  h1.hero-title{font-family:'Fredoka',sans-serif;font-weight:600;font-size:clamp(24px,5vw,32px);line-height:1.15;margin:0 0 8px;}
   .hero-sub{color:var(--ink-dim);font-size:15px;line-height:1.5;margin:0 0 22px;}
 
-  /* Number-base decorative motif */
-  .base-motif{
-    display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;
-  }
+  .base-motif{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
   .base-chip{
-    font-family:'Space Mono',monospace;
-    font-size:12.5px;
-    padding:5px 10px;
-    border-radius:20px;
-    border:1px solid var(--glass-border);
-    background:rgba(255,255,255,0.06);
-    color:var(--ink-dim);
+    font-family:'Space Mono',monospace;font-size:12.5px;padding:5px 10px;border-radius:20px;
+    border:1px solid var(--glass-border);background:rgba(255,255,255,0.06);color:var(--ink-dim);
   }
 
-  label.field-label{
-    display:block;font-size:13.5px;color:var(--ink-dim);margin-bottom:8px;font-weight:600;
-  }
+  label.field-label{display:block;font-size:13.5px;color:var(--ink-dim);margin-bottom:8px;font-weight:600;}
   input.text-input{
-    width:100%;
-    padding:14px 16px;
-    border-radius:var(--radius-md);
-    border:1px solid var(--glass-border);
-    background:rgba(255,255,255,0.07);
-    color:var(--ink);
-    font-size:16px;
-    font-family:'Inter',sans-serif;
-    outline:none;
-    transition:border-color .2s, background .2s;
+    width:100%;padding:14px 16px;border-radius:var(--radius-md);
+    border:1px solid var(--glass-border);background:rgba(255,255,255,0.07);color:var(--ink);
+    font-size:16px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s, background .2s;
   }
-  input.text-input:focus{
-    border-color:var(--cyan);
-    background:rgba(255,255,255,0.10);
-  }
+  input.text-input:focus{border-color:var(--cyan);background:rgba(255,255,255,0.10);}
   input.text-input::placeholder{color:rgba(244,246,255,0.35);}
 
   .btn{
-    appearance:none;border:none;cursor:pointer;
-    font-family:'Inter',sans-serif;font-weight:600;font-size:15px;
-    padding:14px 22px;border-radius:var(--radius-md);
-    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    appearance:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;font-size:15px;
+    padding:14px 22px;border-radius:var(--radius-md);transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
   }
   .btn:active{transform:scale(0.97);}
   .btn:disabled{opacity:0.4;cursor:not-allowed;}
-  .btn-primary{
-    background:linear-gradient(135deg,var(--cyan),#5eead4);
-    color:#0b1026;
-    box-shadow:0 10px 26px rgba(34,211,238,0.30);
-  }
+  .btn-primary{background:linear-gradient(135deg,var(--cyan),#5eead4);color:#0b1026;box-shadow:0 10px 26px rgba(34,211,238,0.30);}
   .btn-primary:hover:not(:disabled){box-shadow:0 12px 30px rgba(34,211,238,0.45);}
-  .btn-ghost{
-    background:rgba(255,255,255,0.06);
-    color:var(--ink);
-    border:1px solid var(--glass-border);
-  }
+  .btn-ghost{background:rgba(255,255,255,0.06);color:var(--ink);border:1px solid var(--glass-border);}
   .btn-ghost:hover:not(:disabled){background:rgba(255,255,255,0.12);}
   .btn-block{width:100%;}
 
   .err-msg{color:var(--red);font-size:13.5px;margin-top:10px;min-height:18px;}
 
-  /* ===== Quiz screen ===== */
-  .quiz-header{
-    display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;
-  }
+  .quiz-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
   .stat-pill{
-    font-family:'Space Mono',monospace;
-    font-size:13px;
-    padding:7px 13px;
-    border-radius:20px;
-    background:rgba(255,255,255,0.07);
-    border:1px solid var(--glass-border);
-    color:var(--ink-dim);
-    white-space:nowrap;
+    font-family:'Space Mono',monospace;font-size:13px;padding:7px 13px;border-radius:20px;
+    background:rgba(255,255,255,0.07);border:1px solid var(--glass-border);color:var(--ink-dim);white-space:nowrap;
   }
   .stat-pill.score{color:var(--green);border-color:rgba(52,211,153,0.4);background:rgba(52,211,153,0.08);}
 
-  .progress-track{
-    width:100%;height:8px;border-radius:8px;
-    background:rgba(255,255,255,0.08);
-    overflow:hidden;margin-bottom:22px;
-  }
-  .progress-fill{
-    height:100%;border-radius:8px;
-    background:linear-gradient(90deg,var(--cyan),var(--pink));
-    transition:width .35s ease;
-  }
+  .progress-track{width:100%;height:8px;border-radius:8px;background:rgba(255,255,255,0.08);overflow:hidden;margin-bottom:22px;}
+  .progress-fill{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--cyan),var(--pink));transition:width .35s ease;}
 
-  .q-eyebrow{
-    font-family:'Space Mono',monospace;
-    font-size:12.5px;color:var(--amber);margin-bottom:10px;
-  }
-  .q-text{
-    font-family:'Fredoka',sans-serif;
-    font-size:clamp(19px,4.3vw,23px);
-    font-weight:600;
-    line-height:1.35;
-    margin:0 0 22px;
-  }
-  .q-text .num{
-    font-family:'Space Mono',monospace;
-    color:var(--cyan);
-  }
+  .q-eyebrow{font-family:'Space Mono',monospace;font-size:12.5px;color:var(--amber);margin-bottom:10px;text-transform:uppercase;}
+  .q-text{font-family:'Fredoka',sans-serif;font-size:clamp(19px,4.3vw,23px);font-weight:600;line-height:1.35;margin:0 0 22px;}
 
   .options{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
   .option{
-    display:flex;align-items:center;gap:12px;
-    text-align:left;
-    padding:14px 16px;
-    border-radius:var(--radius-md);
-    border:1px solid var(--glass-border);
-    background:rgba(255,255,255,0.05);
-    color:var(--ink);
-    cursor:pointer;
-    font-family:'Space Mono',monospace;
-    font-size:15.5px;
-    transition:background .15s ease, border-color .15s ease, transform .1s ease;
+    display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px;border-radius:var(--radius-md);
+    border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--ink);cursor:pointer;
+    font-family:'Space Mono',monospace;font-size:15.5px;transition:background .15s ease, border-color .15s ease, transform .1s ease;
   }
   .option:hover:not(.locked){background:rgba(255,255,255,0.11);border-color:rgba(255,255,255,0.35);}
   .option .opt-letter{
-    width:26px;height:26px;border-radius:8px;
-    background:rgba(255,255,255,0.10);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;
-    flex-shrink:0;
+    width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,0.10);
+    display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-size:12.5px;font-weight:700;flex-shrink:0;
   }
-  .option.selected-correct{
-    background:rgba(52,211,153,0.16);border-color:var(--green);
-  }
-  .option.selected-wrong{
-    background:rgba(251,113,133,0.16);border-color:var(--red);
-  }
-  .option.reveal-correct{
-    border-color:var(--green);background:rgba(52,211,153,0.10);
-  }
+  .option.selected-correct{background:rgba(52,211,153,0.16);border-color:var(--green);}
+  .option.selected-wrong{background:rgba(251,113,133,0.16);border-color:var(--red);}
+  .option.reveal-correct{border-color:var(--green);background:rgba(52,211,153,0.10);}
   .option.locked{cursor:default;}
 
   .feedback-panel{
-    border-radius:var(--radius-md);
-    padding:16px 18px;
-    margin-bottom:20px;
-    border:1px solid var(--glass-border);
-    background:rgba(255,255,255,0.05);
-    animation:fadeIn .3s ease;
+    border-radius:var(--radius-md);padding:16px 18px;margin-bottom:20px;
+    border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);animation:fadeIn .3s ease;
   }
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
-  .feedback-title{
-    font-family:'Fredoka',sans-serif;font-weight:600;font-size:15.5px;margin-bottom:10px;
-    display:flex;align-items:center;gap:8px;
-  }
+  .feedback-title{font-family:'Fredoka',sans-serif;font-weight:600;font-size:15.5px;margin-bottom:10px;}
   .feedback-title.correct{color:var(--green);}
   .feedback-title.wrong{color:var(--red);}
   .steps{font-family:'Space Mono',monospace;font-size:13.5px;color:var(--ink-dim);line-height:1.9;}
   .steps .step-line{white-space:pre-wrap;}
   .steps .final-line{color:var(--ink);font-weight:700;margin-top:8px;}
-  .steps hr{border:none;border-top:1px dashed var(--glass-border);margin:10px 0;}
 
   .nav-row{display:flex;gap:12px;justify-content:space-between;}
   .nav-row .btn{flex:1;}
 
-  /* ===== Results screen ===== */
   .result-hero{text-align:center;padding:10px 0 6px;}
   .result-ring{
-    width:150px;height:150px;margin:0 auto 18px;
-    border-radius:50%;
+    width:150px;height:150px;margin:0 auto 18px;border-radius:50%;
     display:flex;align-items:center;justify-content:center;
-    background:conic-gradient(var(--cyan) calc(var(--pct)*1%), rgba(255,255,255,0.08) 0);
-    position:relative;
+    background:conic-gradient(var(--cyan) calc(var(--pct)*1%), rgba(255,255,255,0.08) 0);position:relative;
   }
-  .result-ring::before{
-    content:'';position:absolute;inset:10px;border-radius:50%;
-    background:linear-gradient(160deg,var(--bg-2),var(--bg-3));
-  }
-  .result-ring .pct-num{
-    position:relative;z-index:1;font-family:'Fredoka',sans-serif;font-size:30px;font-weight:600;
-  }
+  .result-ring::before{content:'';position:absolute;inset:10px;border-radius:50%;background:linear-gradient(160deg,var(--bg-2),var(--bg-3));}
+  .result-ring .pct-num{position:relative;z-index:1;font-family:'Fredoka',sans-serif;font-size:30px;font-weight:600;}
   .result-name{color:var(--ink-dim);font-size:14.5px;margin-bottom:4px;}
   .result-score{font-family:'Space Mono',monospace;font-size:16px;color:var(--ink);margin-bottom:4px;}
   .result-msg{font-family:'Fredoka',sans-serif;font-size:19px;font-weight:600;margin:14px 0 24px;}
   .result-actions{display:flex;flex-direction:column;gap:12px;}
 
-  .footer-note{
-    text-align:center;font-size:12px;color:rgba(185,192,230,0.55);margin-top:18px;padding:0 8px;
-  }
-
+  .footer-note{text-align:center;font-size:12px;color:rgba(185,192,230,0.55);margin-top:18px;padding:0 8px;}
   .hidden{display:none !important;}
-
-  @media (max-width:420px){
-    .nav-row{flex-direction:column;}
-  }
+  @media (max-width:420px){.nav-row{flex-direction:column;}}
 </style>
 </head>
 <body>
@@ -321,8 +171,8 @@
     <div class="base-motif">
       <span class="base-chip">Contact on : 09053136393</span>
     </div>
-    <h1 class="hero-title">Modular Arithmetics And Indicies</h1>
-    <p class="hero-sub">50 questions . Every answer shows the full working, so you learn as you go.</p>
+    <h1 class="hero-title">SS1 Mathematics Quiz</h1>
+    <p class="hero-sub">50 questions. Every answer shows the full working, so you learn as you go.</p>
     <label class="field-label" for="student-name">Enter your full name to begin</label>
     <input type="text" id="student-name" class="text-input" placeholder="e.g. Ada Okafor" autocomplete="off">
     <div class="err-msg" id="name-err"></div>
@@ -370,14 +220,128 @@
     <div class="footer-note">"Send Results" opens your email app with your name and score prefilled to send to justzcontentz@gmail.com.</div>
   </section>
 
-  <div class="footer-note" id="global-footer">Sweet Hope School · SS2 Mathematics</div>
+  <div class="footer-note" id="global-footer">Sweet Hope School · SS1 Mathematics</div>
 </div>
+
 <script>
+// =====================================================================
+//  QUESTION BANK  (edit freely: topic, q, options, correct = index 0-3, working)
+// =====================================================================
+const QUESTIONS = [
+
+// ---------- SECTION A (OBJECTIVES) ----------
+{topic:"Roots", q:"Simplify the cube root of −1/64.", options:["4","−1/4","1/8","−4"], correct:1,
+ working:"(−1/4) × (−1/4) × (−1/4) = −1/64. So the cube root of −1/64 is −1/4."},
+{topic:"Fractions", q:"Evaluate (3¼ × 1⅗) ÷ (11⅓ − 5⅓).", options:["14/15","13/15","4/5","11/15"], correct:1,
+ working:"3¼ = 13/4 and 1⅗ = 8/5. Top: 13/4 × 8/5 = 104/20 = 26/5. Bottom: 11⅓ − 5⅓ = 6. Divide: (26/5) ÷ 6 = 26/30 = 13/15."},
+{topic:"Number Bases", q:"If 23ₓ + 101ₓ = 130ₓ, find the value of x.", options:["7","6","5","4"], correct:3,
+ working:"Write each in powers of x: 23ₓ = 2x + 3, 101ₓ = x² + 1, 130ₓ = x² + 3x. So (2x + 3) + (x² + 1) = x² + 3x. This gives 2x + 4 = 3x, so x = 4. Check in base 4: 11 + 17 = 28 and 130₄ = 16 + 12 = 28."},
+{topic:"Decimals", q:"Simplify (0.2)³ × 8 ÷ 0.4².", options:["40","0.4","0.2","0.04"], correct:1,
+ working:"(0.2)³ = 0.008, so 0.008 × 8 = 0.064. 0.4² = 0.16. Then 0.064 ÷ 0.16 = 0.4."},
+{topic:"Variation", q:"If x varies inversely as y and y varies directly as z², what is the relationship between x and z?", options:["x ∝ z²","x ∝ 1/z","x ∝ z","x ∝ 1/z²"], correct:3,
+ working:"x ∝ 1/y and y ∝ z². Replace y with z²: x ∝ 1/z²."},
+{topic:"Number Bases", q:"If 105ₓ = 86 (in base ten), then the value of x is", options:["9","8","7","10"], correct:0,
+ working:"105ₓ = x² + 0x + 5 = x² + 5. So x² + 5 = 86, x² = 81 and x = 9."},
+{topic:"Indices", q:"If 4^(3x) = 256, then the value of x is", options:["3/4","0.76","1⅓","1.34"], correct:2,
+ working:"256 = 4⁴. So 4^(3x) = 4⁴. Equate the indices: 3x = 4, so x = 4/3 = 1⅓."},
+{topic:"Logarithms", q:"Use logarithm tables or a calculator to find (27.98 × 0.0087)².", options:["0.243","0.0925","5.930","0.05926"], correct:3,
+ working:"27.98 × 0.0087 = 0.24343. Squaring: 0.24343² = 0.05926."},
+{topic:"Number Bases", q:"Convert 69₁₀ to a number in base two.", options:["100101","101001","1000101","1001011"], correct:2,
+ working:"69 ÷ 2 = 34 r1, 34 ÷ 2 = 17 r0, 17 ÷ 2 = 8 r1, 8 ÷ 2 = 4 r0, 4 ÷ 2 = 2 r0, 2 ÷ 2 = 1 r0, 1 ÷ 2 = 0 r1. Reading the remainders bottom to top gives 1000101. Check: 64 + 4 + 1 = 69."},
+{topic:"Change of Subject", q:"Make w the subject of the formula y = 3w − a.", options:["w = 3(y − a)","w = 3(y + a)","w = (y + a)/3","w = (y − a)/3"], correct:2,
+ working:"Add a to both sides: y + a = 3w. Divide both sides by 3: w = (y + a)/3."},
+{topic:"Number Bases", q:"The number 110101₂ converted to base ten is", options:["4","23","49","53"], correct:3,
+ working:"110101₂ = (1×32)+(1×16)+(0×8)+(1×4)+(0×2)+(1×1) = 32+16+4+1 = 53."},
+{topic:"Indices", q:"Simplify (125)^(1/3).", options:["10","5","8","4"], correct:1,
+ working:"The power 1/3 means cube root. 5 × 5 × 5 = 125, so (125)^(1/3) = 5."},
+{topic:"Linear Equations", q:"Solve for x in 5(2x − 3) = 65.", options:["6","7","8","10"], correct:2,
+ working:"Expand: 10x − 15 = 65. Add 15: 10x = 80. Divide by 10: x = 8."},
+{topic:"Number Bases", q:"Multiply 101₂ by 11₂ in binary.", options:["11011₂","10011₂","1111₂","10101₂"], correct:2,
+ working:"101₂ = 5 and 11₂ = 3. 5 × 3 = 15. Converting 15 to binary: 8 + 4 + 2 + 1 = 1111₂."},
+{topic:"Standard Form", q:"What is the standard form of 80460000?", options:["8.046 × 10⁷","8.046 × 10⁶","8.046 × 10⁹","8.046 × 10⁸"], correct:0,
+ working:"Move the decimal point 7 places to the left: 80460000 = 8.046 × 10⁷."},
+{topic:"Change of Subject", q:"Make u the subject of the formula v = u + 10t.", options:["u = (v − 10)/t","u = (v + 10)/t","u = v + 10t","u = v − 10t"], correct:3,
+ working:"Subtract 10t from both sides: u = v − 10t."},
+{topic:"Logarithms", q:"Find the value of log 84235.", options:["5.9254","4.9253","4.9254","4.9255"], correct:3,
+ working:"84235 = 8.4235 × 10⁴. The characteristic is 4. The mantissa (log of 8.4235) is 0.9255. So log 84235 = 4.9255."},
+{topic:"Linear Equations", q:"Solve the equation 3x − 7 = 8 − 2x.", options:["1","2","3","4"], correct:2,
+ working:"Collect x terms: 3x + 2x = 8 + 7. So 5x = 15 and x = 3."},
+{topic:"Linear Equations", q:"Solve the equation (3x − 1)/5 = (x + 2)/4.", options:["12","5","8","2"], correct:3,
+ working:"Cross-multiply: 4(3x − 1) = 5(x + 2). Expand: 12x − 4 = 5x + 10. Then 7x = 14, so x = 2."},
+{topic:"Number Bases", q:"If 431ₓ − 123ₓ = 303ₓ, find x.", options:["4","5","6","7"], correct:1,
+ working:"Write in powers of x: (4x² + 3x + 1) − (x² + 2x + 3) = 3x² + 3. Left side: 3x² + x − 2. So 3x² + x − 2 = 3x² + 3, giving x = 5. Check in base 5: 116 − 38 = 78 and 303₅ = 75 + 3 = 78."},
+
+// ---------- SECTION B (THEORY TURNED INTO OBJECTIVES) ----------
+{topic:"Logarithms", q:"Using logarithm tables, (24.6 × 152.4) ÷ 38.7 is approximately", options:["96.87","9.687","968.7","86.97"], correct:0,
+ working:"log 24.6 = 1.3909 and log 152.4 = 2.1830. Add: 3.5739. log 38.7 = 1.5877. Subtract: 3.5739 − 1.5877 = 1.9862. Antilog of 1.9862 = 96.87."},
+{topic:"Change of Subject", q:"Make x the subject of the formula x/a + y/b = 5.", options:["x = 5a − y/b","x = a(5b − y)/b","x = (5 − y)ab","x = (5b − y)/(ab)"], correct:1,
+ working:"Subtract y/b from both sides: x/a = 5 − y/b = (5b − y)/b. Multiply both sides by a: x = a(5b − y)/b."},
+{topic:"Change of Subject", q:"Using x = a(5b − y)/b, find x when a = 4, b = 2 and y = 3.", options:["7","14","28","10"], correct:1,
+ working:"Substitute: x = 4(5×2 − 3)/2 = 4 × 7 ÷ 2 = 28 ÷ 2 = 14."},
+{topic:"Indices", q:"Simplify (16^(3/4) × 4^(1/2)) ÷ 8^(5/3).", options:["2","1/4","1/2","16"], correct:2,
+ working:"16^(3/4) = (⁴√16)³ = 2³ = 8. 4^(1/2) = 2. 8^(5/3) = (∛8)⁵ = 2⁵ = 32. So the answer is (8 × 2) ÷ 32 = 16/32 = 1/2."},
+{topic:"Number Bases", q:"Convert 110011₂ to base ten.", options:["49","51","53","47"], correct:1,
+ working:"110011₂ = (1×32)+(1×16)+(0×8)+(0×4)+(1×2)+(1×1) = 32+16+2+1 = 51."},
+{topic:"Number Bases", q:"Convert 10111101₂ to base ten.", options:["191","187","189","185"], correct:2,
+ working:"10111101₂ = 128 + 0 + 32 + 16 + 8 + 4 + 0 + 1 = 189."},
+{topic:"Modular Arithmetic", q:"Find the difference between 18 and 6 (mod 7).", options:["2","5","12","3"], correct:1,
+ working:"18 − 6 = 12. Divide 12 by 7: remainder 5. So the difference is 5 (mod 7)."},
+{topic:"Modular Arithmetic", q:"Find the difference between 26 and 12 (mod 11).", options:["14","2","3","4"], correct:2,
+ working:"26 − 12 = 14. Divide 14 by 11: remainder 3. So the difference is 3 (mod 11)."},
+{topic:"Modular Arithmetic", q:"Find the difference between 30 and 14 (mod 13).", options:["4","1","16","3"], correct:3,
+ working:"30 − 14 = 16. Divide 16 by 13: remainder 3. So the difference is 3 (mod 13)."},
+{topic:"Negative Indices", q:"Given p = 3 and a = 4, evaluate p⁻¹ + a⁻¹.", options:["1/7","7/12","12/7","1/12"], correct:1,
+ working:"p⁻¹ = 1/3 and a⁻¹ = 1/4. Add: 1/3 + 1/4 = 4/12 + 3/12 = 7/12."},
+{topic:"Negative Indices", q:"Given r = 1/3 and s = 1/4, evaluate (rs)⁻².", options:["12","1/144","24","144"], correct:3,
+ working:"rs = 1/3 × 1/4 = 1/12. (1/12)⁻² = 12² = 144."},
+{topic:"Negative Indices", q:"Given a = 4 and r = 1/3, evaluate a³r⁻³.", options:["64/27","192","1728","12"], correct:2,
+ working:"a³ = 64. r⁻³ = (1/3)⁻³ = 3³ = 27. So a³r⁻³ = 64 × 27 = 1728."},
+{topic:"Negative Indices", q:"Given p = 3, a = 4, r = 1/3 and s = 1/4, evaluate (pa)⁻² × (rs)⁻².", options:["144","1","1/144","12"], correct:1,
+ working:"pa = 12, so (pa)⁻² = 1/144. rs = 1/12, so (rs)⁻² = 144. Then 1/144 × 144 = 1."},
+{topic:"Negative Indices", q:"Given p = 3 and a = 4, evaluate p⁻² × a.", options:["9/4","12","1/36","4/9"], correct:3,
+ working:"p⁻² = 1/3² = 1/9. Then 1/9 × 4 = 4/9."},
+
+// ---------- EXTRA QUESTIONS ----------
+{topic:"Number Bases", q:"Convert 1011₂ to base ten.", options:["9","11","13","15"], correct:1,
+ working:"1011₂ = (1×8)+(0×4)+(1×2)+(1×1) = 8+2+1 = 11."},
+{topic:"Number Bases", q:"Convert 45₁₀ to base two.", options:["101011","110101","101101","101110"], correct:2,
+ working:"45 ÷ 2 = 22 r1, 22 ÷ 2 = 11 r0, 11 ÷ 2 = 5 r1, 5 ÷ 2 = 2 r1, 2 ÷ 2 = 1 r0, 1 ÷ 2 = 0 r1. Reading bottom to top gives 101101. Check: 32 + 8 + 4 + 1 = 45."},
+{topic:"Number Bases", q:"Convert 123₅ to base ten.", options:["38","28","48","33"], correct:0,
+ working:"123₅ = (1×25)+(2×5)+(3×1) = 25+10+3 = 38."},
+{topic:"Number Bases", q:"Multiply 111₂ by 11₂ in binary.", options:["10011₂","11101₂","10101₂","11011₂"], correct:2,
+ working:"111₂ = 7 and 11₂ = 3. 7 × 3 = 21. Converting 21 to binary: 16 + 4 + 1 = 10101₂."},
+{topic:"Modular Arithmetic", q:"Find (23 + 19) mod 7.", options:["1","6","0","7"], correct:2,
+ working:"23 + 19 = 42. 42 ÷ 7 = 6 exactly, so the remainder is 0."},
+{topic:"Modular Arithmetic", q:"Find (17 × 5) mod 6.", options:["5","3","2","1"], correct:3,
+ working:"17 × 5 = 85. 85 ÷ 6 = 14 remainder 1 (because 6 × 14 = 84). So the answer is 1."},
+{topic:"Modular Arithmetic", q:"Solve x + 5 ≡ 3 (mod 7), where 0 ≤ x < 7.", options:["−2","2","5","8"], correct:2,
+ working:"Subtract 5: x ≡ 3 − 5 = −2 (mod 7). Add 7 to get a value from 0 to 6: −2 + 7 = 5."},
+{topic:"Indices", q:"Simplify 2⁵ × 2³ ÷ 2⁴.", options:["2⁸","2²","2¹²","2⁴"], correct:3,
+ working:"Multiply: add the indices, 5 + 3 = 8, so 2⁸. Divide: subtract the indices, 8 − 4 = 4. The answer is 2⁴."},
+{topic:"Indices", q:"Evaluate (2³)².", options:["32","64","16","256"], correct:1,
+ working:"Power of a power: multiply the indices, 3 × 2 = 6. So (2³)² = 2⁶ = 64."},
+{topic:"Negative Indices", q:"Evaluate 5⁻².", options:["−25","1/10","1/25","−10"], correct:2,
+ working:"A negative index means 1 over the positive power: 5⁻² = 1/5² = 1/25."},
+{topic:"Zero Index", q:"Evaluate 7⁰ + 3⁰.", options:["2","10","0","1"], correct:0,
+ working:"Any non-zero number to the power 0 equals 1. So 7⁰ = 1 and 3⁰ = 1. Then 1 + 1 = 2."},
+{topic:"Indices", q:"Evaluate 27^(2/3).", options:["6","9","18","3"], correct:1,
+ working:"The cube root of 27 is 3. Then 3² = 9. So 27^(2/3) = 9."},
+{topic:"Indices", q:"Evaluate 16^(1/4).", options:["4","8","2","1/4"], correct:2,
+ working:"The power 1/4 means fourth root. 2 × 2 × 2 × 2 = 16, so 16^(1/4) = 2."},
+{topic:"Indices", q:"Solve 3^x = 81.", options:["4","3","27","5"], correct:0,
+ working:"81 = 3 × 3 × 3 × 3 = 3⁴. So 3^x = 3⁴ and x = 4."},
+{topic:"Variation", q:"y varies directly as x. If y = 15 when x = 3, find y when x = 7.", options:["21","28","45","35"], correct:3,
+ working:"y = kx. 15 = 3k, so k = 5. When x = 7: y = 5 × 7 = 35."},
+{topic:"Logarithms", q:"Find the value of log₁₀ 1000.", options:["2","3","4","10"], correct:1,
+ working:"1000 = 10³. So log₁₀ 1000 = 3."},
+
+];
+
+// =====================================================================
+//  QUIZ ENGINE
+// =====================================================================
 (function(){
 
-  // ---------- Helpers ----------
-  function randInt(min, max){ return min + Math.floor(Math.random() * (max - min + 1)); }
-  function pick(arr){ return arr[randInt(0, arr.length - 1)]; }
   function shuffle(arr){
     var a = arr.slice();
     for(var i = a.length - 1; i > 0; i--){
@@ -386,726 +350,20 @@
     }
     return a;
   }
-  function pow(b, e){ return Math.pow(b, e); }
-  function pm(a, n){ return ((a % n) + n) % n; }                 // positive remainder
-  function pw(v, e){ return e === 1 ? v : v + '^{' + e + '}'; }  // variable with index (hides ^1)
-  function lin(a, c){                                            // builds e.g. "2x + 3" or "x − 4"
-    var t = (a === 1 ? '' : a) + 'x';
-    if(c > 0) t += ' + ' + c;
-    else if(c < 0) t += ' − ' + (-c);
-    return t;
-  }
-  function num(s){ return '<span class="num">' + s + '</span>'; }
   // ^{...} becomes a superscript on screen
-  function fmtHtml(s){ return String(s).replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>'); }
+  function fmtHtml(s){
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>');
+  }
 
-  // =====================================================
-  //  MODULAR ARITHMETIC GENERATORS (15 questions)
-  // =====================================================
-  var EY_MOD = 'MODULAR ARITHMETIC';
-
-  function modAdd(){
-    var n = randInt(6, 13), a = randInt(120, 999), b = randInt(120, 999);
-    var ra = a % n, rb = b % n, s = ra + rb, ans = s % n;
+  // Build the quiz: shuffle the questions and the options of each question
+  var questions = shuffle(QUESTIONS).map(function(item){
+    var answerText = item.options[item.correct];
     return {
-      eyebrow: EY_MOD,
-      html: 'Find ' + num('(' + a + ' + ' + b + ') mod ' + n),
-      answer: String(ans),
-      wrong: [s, (ra * rb) % n, pm(ra - rb, n), (a + b) % (n + 1), (ans + 1) % n],
-      steps: [
-        a + ' mod ' + n + ' = ' + ra,
-        b + ' mod ' + n + ' = ' + rb,
-        'Add the remainders: ' + ra + ' + ' + rb + ' = ' + s,
-        s + ' mod ' + n + ' = ' + ans
-      ]
-    };
-  }
-
-  function modMul(){
-    var n = randInt(6, 13), a = randInt(120, 999), b = randInt(120, 999);
-    var ra = a % n, rb = b % n, p = ra * rb, ans = p % n;
-    return {
-      eyebrow: EY_MOD,
-      html: 'Find ' + num('(' + a + ' × ' + b + ') mod ' + n),
-      answer: String(ans),
-      wrong: [p, (ra + rb) % n, pm(ra - rb, n), (a * b) % (n + 1), (ans + 1) % n],
-      steps: [
-        a + ' mod ' + n + ' = ' + ra,
-        b + ' mod ' + n + ' = ' + rb,
-        'Multiply the remainders: ' + ra + ' × ' + rb + ' = ' + p,
-        p + ' mod ' + n + ' = ' + ans
-      ]
-    };
-  }
-
-  function modSub(){
-    var n = randInt(5, 12), a = randInt(10, 90), b = randInt(150, 600);
-    var d = a - b, k = Math.ceil(-d / n), v = d + k * n;
-    return {
-      eyebrow: EY_MOD + ' (NEGATIVE RESULT)',
-      html: 'Find ' + num('(' + a + ' − ' + b + ') mod ' + n) + ' as a number from 0 to ' + (n - 1),
-      answer: String(v),
-      wrong: [d % n, (b - a) % n, (n - v) % n, (v + 1) % n],
-      steps: [
-        a + ' − ' + b + ' = ' + d + ' (negative)',
-        'Add multiples of ' + n + ' until the result is between 0 and ' + (n - 1) + ':',
-        d + ' + ' + k + ' × ' + n + ' = ' + v
-      ]
-    };
-  }
-
-  function modLin(){
-    var n = randInt(7, 15), a = randInt(8, 45), b = randInt(8, 45);
-    var d = b - a, ans = pm(d, n);
-    return {
-      eyebrow: EY_MOD + ' (SOLVING)',
-      html: 'Solve for x: ' + num('x + ' + a + ' ≡ ' + b + ' (mod ' + n + ')') + ', where 0 ≤ x &lt; ' + n,
-      answer: String(ans),
-      wrong: [(a + b) % n, d, (n - ans) % n, (ans + 1) % n, (ans + n - 1) % n],
-      steps: [
-        'Subtract ' + a + ' from both sides: x ≡ ' + b + ' − ' + a + ' (mod ' + n + ')',
-        b + ' − ' + a + ' = ' + d,
-        d + ' mod ' + n + ' = ' + ans
-      ]
-    };
-  }
-
-  function modMulSolve(){
-    var n = pick([7, 11, 13]), a = randInt(2, n - 1), x = randInt(2, n - 1), b = (a * x) % n;
-    var steps = ['Test x = 1, 2, 3, … until ' + a + ' × x leaves remainder ' + b + ' when divided by ' + n + ':'];
-    for(var k = 1; k <= x; k++){
-      steps.push(a + ' × ' + k + ' = ' + (a * k) + ' ≡ ' + ((a * k) % n) + ' (mod ' + n + ')' + (k === x ? '   ✓ matches ' + b : ''));
-    }
-    return {
-      eyebrow: EY_MOD + ' (SOLVING)',
-      html: 'Solve for x: ' + num(a + 'x ≡ ' + b + ' (mod ' + n + ')') + ', where 0 &lt; x &lt; ' + n,
-      answer: String(x),
-      wrong: [b, n - x, (x % (n - 1)) + 1, pm(b - a, n), Math.floor(b / a)],
-      steps: steps
-    };
-  }
-
-  function modCombo(){
-    var n = randInt(7, 13), a = randInt(12, 99), b = randInt(12, 99), c = randInt(12, 99), d = randInt(12, 99);
-    var r1 = (a * b) % n, r2 = (c * d) % n, s = r1 + r2, ans = s % n;
-    return {
-      eyebrow: EY_MOD,
-      html: 'Find ' + num('(' + a + ' × ' + b + ' + ' + c + ' × ' + d + ') mod ' + n),
-      answer: String(ans),
-      wrong: [s, (r1 * r2) % n, pm(r1 - r2, n), (a * b + c * d) % (n + 1), (ans + 1) % n],
-      steps: [
-        a + ' × ' + b + ' = ' + (a * b) + ', and ' + (a * b) + ' mod ' + n + ' = ' + r1,
-        c + ' × ' + d + ' = ' + (c * d) + ', and ' + (c * d) + ' mod ' + n + ' = ' + r2,
-        'Add: ' + r1 + ' + ' + r2 + ' = ' + s,
-        s + ' mod ' + n + ' = ' + ans
-      ]
-    };
-  }
-
-  function hr(k){ return (((k - 1) % 12) + 12) % 12 + 1; }
-  function modClock(){
-    var h = randInt(1, 12), N = randInt(60, 500);
-    var r = N % 12, s = h + r, ans = s > 12 ? s - 12 : s;
-    function t(k){ return hr(k) + " o'clock"; }
-    return {
-      eyebrow: EY_MOD + ' (CLOCK)',
-      html: "A 12-hour clock shows " + num(h + " o'clock") + ". What time will it show after " + num(N + ' hours') + '?',
-      answer: t(ans),
-      wrong: [t(ans + 1), t(ans - 1), t(ans + 2), t(r === 0 ? 12 : r), t(h + N)],
-      steps: [
-        'A 12-hour clock repeats every 12 hours, so we work in mod 12.',
-        N + ' mod 12 = ' + r,
-        'Move ' + r + ' hours forward from ' + h + ': ' + h + ' + ' + r + ' = ' + s,
-        s > 12 ? s + ' is more than 12, so ' + s + ' − 12 = ' + ans : s + ' is not more than 12, so the time is ' + ans
-      ]
-    };
-  }
-
-  var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  function modDay(){
-    var di = randInt(0, 6), N = randInt(100, 900), r = N % 7;
-    function dy(k){ return DAYS[((k % 7) + 7) % 7]; }
-    return {
-      eyebrow: EY_MOD + ' (DAYS OF THE WEEK)',
-      html: 'Today is ' + num(DAYS[di]) + '. What day of the week will it be ' + num(N + ' days') + ' from today?',
-      answer: dy(di + r),
-      wrong: [dy(di + r + 1), dy(di + r - 1), dy(di + r + 2), dy(di + r + 3)],
-      steps: [
-        'Days of the week repeat every 7 days, so we work in mod 7.',
-        N + ' mod 7 = ' + r,
-        'Count ' + r + ' day(s) forward from ' + DAYS[di] + ': ' + dy(di + r)
-      ]
-    };
-  }
-
-  function modPow(){
-    var n = pick([5, 7, 9, 11, 13]), a, ra;
-    do { a = randInt(3, n + 14); ra = a % n; } while(ra < 2);
-    var k = randInt(4, 7), r = ra;
-    var steps = ['Reduce the base first: ' + a + ' ≡ ' + ra + ' (mod ' + n + ')', a + '^{1} ≡ ' + ra];
-    for(var i = 2; i <= k; i++){
-      var prev = r;
-      r = (prev * ra) % n;
-      steps.push(a + '^{' + i + '} ≡ ' + prev + ' × ' + ra + ' = ' + (prev * ra) + ' ≡ ' + r + ' (mod ' + n + ')');
-    }
-    return {
-      eyebrow: EY_MOD + ' (POWERS)',
-      html: 'Find ' + num(a + '^{' + k + '} mod ' + n),
-      answer: String(r),
-      wrong: [(ra * k) % n, (ra + k) % n, pm(r + 1, n), pm(r - 1, n), (a * k) % n],
-      steps: steps
-    };
-  }
-
-  // =====================================================
-  //  INDICES: MULTIPLICATION LAW  (a^m × a^n = a^(m+n))
-  // =====================================================
-  var EY_MUL = 'INDICES — MULTIPLICATION LAW';
-
-  function mulLaw1(){
-    var b = randInt(2, 9), m = randInt(2, 8), n = randInt(2, 8), p = randInt(2, 8), S = m + n + p;
-    return {
-      eyebrow: EY_MUL,
-      html: 'Simplify ' + num(b + '^{' + m + '} × ' + b + '^{' + n + '} × ' + b + '^{' + p + '}') + ', leaving your answer in index form.',
-      answer: b + '^{' + S + '}',
-      wrong: [b + '^{' + (S + 1) + '}', b + '^{' + (S - 1) + '}', b + '^{' + (m * n * p) + '}', (b * b) + '^{' + S + '}'],
-      steps: [
-        'Same base, so ADD the indices: a^{m} × a^{n} = a^{m + n}',
-        m + ' + ' + n + ' + ' + p + ' = ' + S
-      ]
-    };
-  }
-
-  function mulLaw2(){
-    var b = randInt(2, 9), x, u, v, w;
-    do { x = randInt(2, 9); u = randInt(-3, 5); v = randInt(-3, 5); w = 2 * x + u + v; } while(w < 2);
-    return {
-      eyebrow: EY_MUL,
-      html: 'Find the value of x: ' + num(b + '^{' + lin(1, u) + '} × ' + b + '^{' + lin(1, v) + '} = ' + b + '^{' + w + '}'),
-      answer: String(x),
-      wrong: [w - u - v, x + 1, x - 1, x + 2, w],
-      steps: [
-        'Same base on the left, so ADD the indices:',
-        '(' + lin(1, u) + ') + (' + lin(1, v) + ') = ' + w,
-        lin(2, u + v) + ' = ' + w,
-        '2x = ' + w + ' − (' + (u + v) + ') = ' + (w - u - v),
-        'x = ' + (w - u - v) + ' ÷ 2 = ' + x
-      ]
-    };
-  }
-
-  function mulLaw3(){
-    var c1 = randInt(2, 9), c2 = randInt(2, 9), m = randInt(1, 6), n = randInt(1, 6), p = randInt(1, 6), q = randInt(1, 6);
-    return {
-      eyebrow: EY_MUL,
-      html: 'Simplify ' + num('(' + c1 + pw('x', m) + pw('y', n) + ') × (' + c2 + pw('x', p) + pw('y', q) + ')'),
-      answer: (c1 * c2) + pw('x', m + p) + pw('y', n + q),
-      wrong: [
-        (c1 + c2) + pw('x', m + p) + pw('y', n + q),
-        (c1 * c2) + pw('x', m * p) + pw('y', n * q),
-        (c1 * c2) + pw('x', m + p) + pw('y', n * q),
-        (c1 * c2) + pw('x', m * p) + pw('y', n + q),
-        (c1 * c2) + pw('x', m + p + 1) + pw('y', n + q)
-      ],
-      steps: [
-        'MULTIPLY the coefficients: ' + c1 + ' × ' + c2 + ' = ' + (c1 * c2),
-        'ADD the indices of x: ' + m + ' + ' + p + ' = ' + (m + p),
-        'ADD the indices of y: ' + n + ' + ' + q + ' = ' + (n + q)
-      ]
-    };
-  }
-
-  function mulLaw4(){
-    var pr = pick([[2, 2], [2, 3], [3, 2], [3, 3]]), b = pr[0], k = pr[1], B = pow(b, k);
-    var x = randInt(2, 6), u = randInt(-2, 3), v = randInt(-2, 3);
-    var w = (1 + k) * x + u + k * v, c = u + k * v, rhs = w - c;
-    return {
-      eyebrow: EY_MUL + ' (CHANGING THE BASE)',
-      html: 'Find the value of x: ' + num(b + '^{' + lin(1, u) + '} × ' + B + '^{' + lin(1, v) + '} = ' + b + '^{' + w + '}'),
-      answer: String(x),
-      wrong: [rhs, x + 1, x - 1, x + 2, w],
-      steps: [
-        'Make the bases the same: ' + B + ' = ' + b + '^{' + k + '}',
-        '(' + b + '^{' + k + '})^{' + lin(1, v) + '} = ' + b + '^{' + k + '(' + lin(1, v) + ')}',
-        'ADD the indices: (' + lin(1, u) + ') + ' + k + '(' + lin(1, v) + ') = ' + w,
-        lin(1 + k, c) + ' = ' + w,
-        (1 + k) + 'x = ' + w + ' − (' + c + ') = ' + rhs,
-        'x = ' + rhs + ' ÷ ' + (1 + k) + ' = ' + x
-      ]
-    };
-  }
-
-  // =====================================================
-  //  INDICES: DIVISION LAW  (a^m ÷ a^n = a^(m−n))
-  // =====================================================
-  var EY_DIV = 'INDICES — DIVISION LAW';
-
-  function divLaw1(){
-    var b = randInt(2, 9), m = randInt(13, 20), n = randInt(2, 4), p = randInt(2, 4), e = m - n - p;
-    return {
-      eyebrow: EY_DIV,
-      html: 'Simplify ' + num(b + '^{' + m + '} ÷ ' + b + '^{' + n + '} ÷ ' + b + '^{' + p + '}') + ', leaving your answer in index form.',
-      answer: b + '^{' + e + '}',
-      wrong: [b + '^{' + (m - n + p) + '}', b + '^{' + (m - n * p) + '}', b + '^{' + (m + n + p) + '}', b + '^{' + (e + 1) + '}'],
-      steps: [
-        'Same base, so SUBTRACT the indices: a^{m} ÷ a^{n} = a^{m − n}',
-        'Work from left to right: ' + m + ' − ' + n + ' = ' + (m - n),
-        (m - n) + ' − ' + p + ' = ' + e
-      ]
-    };
-  }
-
-  function divLaw2(){
-    var b = randInt(2, 9), c, x, u, v, w;
-    do { c = pick([2, 3]); x = randInt(2, 8); u = randInt(-3, 5); v = randInt(-3, 5); w = (c - 1) * x + u - v; } while(w < 2);
-    var rhs = w - (u - v);
-    return {
-      eyebrow: EY_DIV,
-      html: 'Find the value of x: ' + num(b + '^{' + lin(c, u) + '} ÷ ' + b + '^{' + lin(1, v) + '} = ' + b + '^{' + w + '}'),
-      answer: String(x),
-      wrong: [rhs, x + 1, x - 1, x + 2, w],
-      steps: [
-        'Same base on the left, so SUBTRACT the indices:',
-        '(' + lin(c, u) + ') − (' + lin(1, v) + ') = ' + w,
-        lin(c - 1, u - v) + ' = ' + w,
-        lin(c - 1, 0) + ' = ' + w + ' − (' + (u - v) + ') = ' + rhs,
-        'x = ' + rhs + ' ÷ ' + (c - 1) + ' = ' + x
-      ]
-    };
-  }
-
-  function divLaw3(){
-    var c2 = randInt(2, 6), k = randInt(2, 6), c1 = c2 * k;
-    var p = randInt(1, 4), q = randInt(1, 4), m = p + randInt(1, 5), n = q + randInt(1, 5);
-    return {
-      eyebrow: EY_DIV,
-      html: 'Simplify ' + num('(' + c1 + pw('x', m) + pw('y', n) + ') ÷ (' + c2 + pw('x', p) + pw('y', q) + ')'),
-      answer: k + pw('x', m - p) + pw('y', n - q),
-      wrong: [
-        (c1 - c2) + pw('x', m - p) + pw('y', n - q),
-        k + pw('x', m + p) + pw('y', n + q),
-        k + pw('x', m - p) + pw('y', n + q),
-        k + pw('x', m / 1 + 1 - p) + pw('y', n - q),
-        c2 + pw('x', m - p) + pw('y', n - q)
-      ],
-      steps: [
-        'DIVIDE the coefficients: ' + c1 + ' ÷ ' + c2 + ' = ' + k,
-        'SUBTRACT the indices of x: ' + m + ' − ' + p + ' = ' + (m - p),
-        'SUBTRACT the indices of y: ' + n + ' − ' + q + ' = ' + (n - q)
-      ]
-    };
-  }
-
-  function divLaw4(){
-    var b = randInt(2, 5), e = randInt(2, 6), p = randInt(2, 6);
-    var m = randInt(2, e + p - 2), n = e + p - m;
-    return {
-      eyebrow: EY_DIV + ' (WITH MULTIPLICATION)',
-      html: 'Evaluate ' + num('(' + b + '^{' + m + '} × ' + b + '^{' + n + '}) ÷ ' + b + '^{' + p + '}'),
-      answer: String(pow(b, e)),
-      wrong: [pow(b, e + 1), pow(b, e - 1), pow(b, e + 2), b * e],
-      steps: [
-        'Bracket first (multiplication law, ADD indices): ' + m + ' + ' + n + ' = ' + (m + n) + ', so ' + b + '^{' + (m + n) + '}',
-        'Then divide (division law, SUBTRACT indices): ' + (m + n) + ' − ' + p + ' = ' + e,
-        b + '^{' + e + '} = ' + pow(b, e)
-      ]
-    };
-  }
-
-  // =====================================================
-  //  INDICES: PRODUCT / POWER LAW  ((a^m)^n = a^(mn), (ab)^n = a^n b^n)
-  // =====================================================
-  var EY_PRO = 'INDICES — PRODUCT (POWER) LAW';
-
-  function proLaw1(){
-    var b = randInt(2, 9), m = randInt(2, 5), n = randInt(2, 4), p = randInt(2, m * n - 1), e = m * n - p;
-    return {
-      eyebrow: EY_PRO,
-      html: 'Simplify ' + num('(' + b + '^{' + m + '})^{' + n + '} ÷ ' + b + '^{' + p + '}') + ', leaving your answer in index form.',
-      answer: b + '^{' + e + '}',
-      wrong: [b + '^{' + (m + n - p) + '}', b + '^{' + (m * n + p) + '}', b + '^{' + (e + 1) + '}', b + '^{' + (e - 1) + '}'],
-      steps: [
-        'Power of a power, MULTIPLY the indices: (a^{m})^{n} = a^{mn}',
-        m + ' × ' + n + ' = ' + (m * n) + ', so the top becomes ' + b + '^{' + (m * n) + '}',
-        'Divide, SUBTRACT the indices: ' + (m * n) + ' − ' + p + ' = ' + e
-      ]
-    };
-  }
-
-  function proLaw2(){
-    var b = randInt(2, 9), k = randInt(2, 4), x, u, v, w;
-    do { x = randInt(2, 6); u = randInt(1, 6); v = randInt(-2, 3); w = k * (x + v) + u; } while(w < 2);
-    var c = k * v + u, rhs = w - c;
-    return {
-      eyebrow: EY_PRO,
-      html: 'Find the value of x: ' + num('(' + b + '^{' + lin(1, v) + '})^{' + k + '} × ' + b + '^{' + u + '} = ' + b + '^{' + w + '}'),
-      answer: String(x),
-      wrong: [rhs, x + 1, x - 1, x + 2, w],
-      steps: [
-        'Power of a power, MULTIPLY the indices: ' + k + '(' + lin(1, v) + ')',
-        'Same base, ADD the indices: ' + k + '(' + lin(1, v) + ') + ' + u + ' = ' + w,
-        lin(k, c) + ' = ' + w,
-        k + 'x = ' + w + ' − (' + c + ') = ' + rhs,
-        'x = ' + rhs + ' ÷ ' + k + ' = ' + x
-      ]
-    };
-  }
-
-  function proLaw3(){
-    var c = randInt(2, 4), k = randInt(2, 3), m = randInt(1, 4), n = randInt(1, 4);
-    return {
-      eyebrow: EY_PRO,
-      html: 'Simplify ' + num('(' + c + pw('x', m) + pw('y', n) + ')^{' + k + '}'),
-      answer: pow(c, k) + pw('x', m * k) + pw('y', n * k),
-      wrong: [
-        (c * k) + pw('x', m * k) + pw('y', n * k),
-        pow(c, k) + pw('x', m + k) + pw('y', n + k),
-        pow(c, k) + pw('x', m * k) + pw('y', n),
-        pow(c, k) + pw('x', m) + pw('y', n * k),
-        (c + k) + pw('x', m * k) + pw('y', n * k)
-      ],
-      steps: [
-        'Raise EVERY part of the bracket to the power ' + k + ':',
-        'Coefficient: ' + c + '^{' + k + '} = ' + pow(c, k),
-        'x: (x^{' + m + '})^{' + k + '} = x^{' + (m * k) + '}',
-        'y: (y^{' + n + '})^{' + k + '} = y^{' + (n * k) + '}'
-      ]
-    };
-  }
-
-  function proLaw4(){
-    var L = pick(['a', 'x', 'm', 't']), m = randInt(2, 4), k = randInt(2, 4), p = randInt(2, 4), l = randInt(2, 3), q = randInt(2, 5);
-    var e = m * k + p * l - q;
-    return {
-      eyebrow: EY_PRO + ' (MIXED)',
-      html: 'Simplify ' + num('(' + L + '^{' + m + '})^{' + k + '} × (' + L + '^{' + p + '})^{' + l + '} ÷ ' + L + '^{' + q + '}'),
-      answer: pw(L, e),
-      wrong: [pw(L, e + 1), pw(L, e - 1), pw(L, m + k + p + l - q), pw(L, m * k + p * l + q)],
-      steps: [
-        'Power of a power, MULTIPLY: (' + L + '^{' + m + '})^{' + k + '} = ' + L + '^{' + (m * k) + '} and (' + L + '^{' + p + '})^{' + l + '} = ' + L + '^{' + (p * l) + '}',
-        'Multiplication, ADD: ' + (m * k) + ' + ' + (p * l) + ' = ' + (m * k + p * l),
-        'Division, SUBTRACT: ' + (m * k + p * l) + ' − ' + q + ' = ' + e
-      ]
-    };
-  }
-
-  function proLaw5(){
-    var pr = pick([[2, 3], [2, 5], [3, 5]]), b1 = pr[0], b2 = pr[1];
-    var m = randInt(1, 3), n = randInt(1, 3), k = randInt(2, 3);
-    var v1 = pow(b1, m * k), v2 = pow(b2, n * k), v = v1 * v2;
-    return {
-      eyebrow: EY_PRO + ' (EVALUATE)',
-      html: 'Evaluate ' + num('(' + b1 + '^{' + m + '} × ' + b2 + '^{' + n + '})^{' + k + '}'),
-      answer: String(v),
-      wrong: [pow(b1, m * k) * pow(b2, n), (pow(b1, m) * pow(b2, n)) * k, pow(b1, m + k) * pow(b2, n + k), pow(b1, m) * pow(b2, n * k)],
-      steps: [
-        'Raise each factor in the bracket to the power ' + k + ' (multiply the indices):',
-        b1 + '^{' + (m * k) + '} × ' + b2 + '^{' + (n * k) + '}',
-        b1 + '^{' + (m * k) + '} = ' + v1 + ' and ' + b2 + '^{' + (n * k) + '} = ' + v2,
-        v1 + ' × ' + v2 + ' = ' + v
-      ]
-    };
-  }
-
-  function proLaw6(){
-    var k, l, p, q, m, n, ex, ey;
-    do {
-      k = randInt(2, 3); l = randInt(2, 3); p = randInt(1, 3); q = randInt(1, 3);
-      m = randInt(2, 5); n = randInt(2, 5);
-      ex = m * k - p * l; ey = n * k - q * l;
-    } while(ex < 1 || ey < 1);
-    return {
-      eyebrow: EY_PRO + ' (MIXED)',
-      html: 'Simplify ' + num('(x^{' + m + '}y^{' + n + '})^{' + k + '} ÷ (x^{' + p + '}y^{' + q + '})^{' + l + '}'),
-      answer: pw('x', ex) + pw('y', ey),
-      wrong: [
-        pw('x', m * k + p * l) + pw('y', n * k + q * l),
-        pw('x', ex + 1) + pw('y', ey),
-        pw('x', ex) + pw('y', ey + 1),
-        pw('x', (m - p) * k) + pw('y', (n - q) * l),
-        pw('x', m * k - p) + pw('y', n * k - q)
-      ],
-      steps: [
-        'Top: (x^{' + m + '}y^{' + n + '})^{' + k + '} = x^{' + (m * k) + '}y^{' + (n * k) + '}',
-        'Bottom: (x^{' + p + '}y^{' + q + '})^{' + l + '} = x^{' + (p * l) + '}y^{' + (q * l) + '}',
-        'Divide, SUBTRACT the indices of x: ' + (m * k) + ' − ' + (p * l) + ' = ' + ex,
-        'SUBTRACT the indices of y: ' + (n * k) + ' − ' + (q * l) + ' = ' + ey
-      ]
-    };
-  }
-
-  // =====================================================
-  //  INDICES: NEGATIVE INDEX  (a^−n = 1 / a^n)
-  // =====================================================
-  var EY_NEG = 'INDICES — NEGATIVE INDEX';
-
-  function negLaw1(){
-    var b = randInt(2, 5), n = randInt(2, 4), v = pow(b, n);
-    return {
-      eyebrow: EY_NEG,
-      html: 'Evaluate ' + num(b + '^{-' + n + '}'),
-      answer: '1/' + v,
-      wrong: ['-' + v, '1/' + (b * n), '-1/' + v, String(v)],
-      steps: [
-        'A negative index means “1 over”: a^{-n} = 1 / a^{n}',
-        b + '^{-' + n + '} = 1 / ' + b + '^{' + n + '}',
-        b + '^{' + n + '} = ' + v + ', so the answer is 1/' + v
-      ]
-    };
-  }
-
-  function negLaw2(){
-    var pr = pick([[2, 3], [3, 4], [2, 5], [3, 5], [4, 5], [3, 2], [5, 2]]), p = pr[0], q = pr[1], n = randInt(2, 3);
-    return {
-      eyebrow: EY_NEG,
-      html: 'Evaluate ' + num('(' + p + '/' + q + ')^{-' + n + '}') + ' as a fraction.',
-      answer: pow(q, n) + '/' + pow(p, n),
-      wrong: [pow(p, n) + '/' + pow(q, n), (q * n) + '/' + (p * n), '-' + pow(p, n) + '/' + pow(q, n), '-' + pow(q, n) + '/' + pow(p, n)],
-      steps: [
-        'A negative index flips the fraction: (a/b)^{-n} = (b/a)^{n}',
-        '(' + p + '/' + q + ')^{-' + n + '} = (' + q + '/' + p + ')^{' + n + '}',
-        'Raise the top and bottom to the power ' + n + ': ' + pow(q, n) + '/' + pow(p, n)
-      ]
-    };
-  }
-
-  function negLaw3(){
-    var b = randInt(2, 5), n = randInt(2, 4), u = randInt(1, 4), v = pow(b, n), x = -n - u;
-    return {
-      eyebrow: EY_NEG + ' (SOLVING)',
-      html: 'Find the value of x: ' + num(b + '^{' + lin(1, u) + '} = 1/' + v),
-      answer: String(x),
-      wrong: [-n, -n + u, n + u, n - u],
-      steps: [
-        v + ' = ' + b + '^{' + n + '}, so 1/' + v + ' = ' + b + '^{-' + n + '}',
-        'Same base, so equate the indices: ' + lin(1, u) + ' = -' + n,
-        'x = -' + n + ' − ' + u + ' = ' + x
-      ]
-    };
-  }
-
-  function negLaw4(){
-    var c = randInt(2, 5), m = randInt(1, 4), n = randInt(1, 5), p = randInt(1, 4);
-    return {
-      eyebrow: EY_NEG + ' (POSITIVE INDICES ONLY)',
-      html: 'Express ' + num(c + 'x^{-' + m + '}y^{' + n + '}z^{-' + p + '}') + ' with positive indices only.',
-      answer: c + pw('y', n) + '/' + pw('x', m) + pw('z', p),
-      wrong: [
-        c + pw('x', m) + pw('y', n) + pw('z', p),
-        c + pw('x', m) + pw('z', p) + '/' + pw('y', n),
-        '1/' + c + pw('x', m) + pw('y', n) + pw('z', p),
-        c + pw('y', n) + pw('z', p) + '/' + pw('x', m)
-      ],
-      steps: [
-        'A negative index moves that letter to the other side of the fraction line.',
-        'x^{-' + m + '} moves to the bottom as x^{' + m + '}',
-        'z^{-' + p + '} moves to the bottom as z^{' + p + '}',
-        'The coefficient ' + c + ' and y^{' + n + '} have positive indices, so they stay on top.'
-      ]
-    };
-  }
-
-  function negLaw5(){
-    var b, m, n, p, e;
-    do { b = randInt(2, 5); m = randInt(1, 6); n = randInt(1, 6); p = randInt(1, 5); e = m - n + p; } while(e < 2 || e > 6);
-    return {
-      eyebrow: EY_NEG + ' (WITH OTHER LAWS)',
-      html: 'Evaluate ' + num(b + '^{' + m + '} × ' + b + '^{-' + n + '} ÷ ' + b + '^{-' + p + '}'),
-      answer: String(pow(b, e)),
-      wrong: [pow(b, e + 1), pow(b, e - 1), pow(b, e + 2), b * e],
-      steps: [
-        'Multiply, ADD the indices: ' + m + ' + (-' + n + ') = ' + (m - n),
-        'Divide, SUBTRACT the indices: ' + (m - n) + ' − (-' + p + ') = ' + (m - n) + ' + ' + p + ' = ' + e,
-        b + '^{' + e + '} = ' + pow(b, e)
-      ]
-    };
-  }
-
-  function negLaw6(){
-    var pr = pick([[2, 3], [3, 4], [2, 5], [3, 5], [4, 5]]), p = pr[0], q = pr[1], n = randInt(2, 4);
-    return {
-      eyebrow: EY_NEG + ' (SOLVING)',
-      html: 'Find the value of x: ' + num('(' + p + '/' + q + ')^{x} = ' + pow(q, n) + '/' + pow(p, n)),
-      answer: String(-n),
-      wrong: [n, -(n + 1), -(n - 1), 1 - n],
-      steps: [
-        pow(q, n) + '/' + pow(p, n) + ' = (' + q + '/' + p + ')^{' + n + '}',
-        '(' + q + '/' + p + ') is the flip of (' + p + '/' + q + '), so (' + q + '/' + p + ')^{' + n + '} = (' + p + '/' + q + ')^{-' + n + '}',
-        'Equate the indices: x = -' + n
-      ]
-    };
-  }
-
-  function negLaw7(){
-    var b = randInt(2, 6), n = randInt(2, 4), v = pow(b, n);
-    return {
-      eyebrow: EY_NEG,
-      html: 'Evaluate ' + num('(1/' + b + ')^{-' + n + '}'),
-      answer: String(v),
-      wrong: ['1/' + v, '-' + v, String(b * n), '1/' + (b * n)],
-      steps: [
-        'A negative index flips the fraction: (1/' + b + ')^{-' + n + '} = (' + b + '/1)^{' + n + '}',
-        b + '^{' + n + '} = ' + v
-      ]
-    };
-  }
-
-  // =====================================================
-  //  INDICES: ZERO LAW  (a^0 = 1, where a ≠ 0)
-  // =====================================================
-  var EY_ZER = 'INDICES — ZERO LAW';
-
-  function zeroLaw1(){
-    var a = randInt(2, 99), b = randInt(2, 99), c = randInt(2, 99), k = randInt(3, 9), m = randInt(3, 9), n = randInt(2, 8);
-    var ans = k + m - n;
-    return {
-      eyebrow: EY_ZER,
-      html: 'Evaluate ' + num(k + ' × ' + a + '^{0} + ' + m + ' × ' + b + '^{0} − ' + n + ' × ' + c + '^{0}'),
-      answer: String(ans),
-      wrong: [0, k + m + n, k * m - n, k + m, ans + 1, -ans],
-      steps: [
-        'Zero law: any non-zero number to the power 0 equals 1.',
-        a + '^{0} = 1, ' + b + '^{0} = 1, ' + c + '^{0} = 1',
-        k + ' × 1 + ' + m + ' × 1 − ' + n + ' × 1 = ' + k + ' + ' + m + ' − ' + n + ' = ' + ans
-      ]
-    };
-  }
-
-  function zeroLaw2(){
-    var a = randInt(3, 9), b = randInt(3, 9), c = randInt(2, 8), q = randInt(2, 9), r = randInt(2, 9), s = randInt(2, 9), t = randInt(2, 9);
-    var ans = a + b - c;
-    return {
-      eyebrow: EY_ZER + ' (BRACKETS)',
-      html: 'Evaluate ' + num(a + '(' + q + 'x^{2}y)^{0} + ' + b + '(' + r + 'p − ' + s + 'q)^{0} − ' + c + '(' + t + 'm^{3})^{0}') + ', assuming no bracket equals zero.',
-      answer: String(ans),
-      wrong: [a + b + c, a + b, a * b - c, a - b + c, 0],
-      steps: [
-        'Zero law: anything (not zero) to the power 0 equals 1, even a long bracket.',
-        'Each bracket^{0} = 1',
-        a + ' × 1 + ' + b + ' × 1 − ' + c + ' × 1 = ' + a + ' + ' + b + ' − ' + c + ' = ' + ans
-      ]
-    };
-  }
-
-  function zeroLaw3(){
-    var b = randInt(2, 9), k = randInt(2, 5), x = randInt(2, 8), m = k * x;
-    return {
-      eyebrow: EY_ZER + ' (SOLVING)',
-      html: 'Find the value of x: ' + num(b + '^{' + lin(k, -m) + '} = 1'),
-      answer: String(x),
-      wrong: [m, x + 1, x - 1, k, x + 2],
-      steps: [
-        'Zero law: ' + b + '^{0} = 1, so the index must be 0.',
-        lin(k, -m) + ' = 0',
-        k + 'x = ' + m,
-        'x = ' + m + ' ÷ ' + k + ' = ' + x
-      ]
-    };
-  }
-
-  function zeroLaw4(){
-    var b = randInt(2, 9), m = randInt(2, 9), k = randInt(3, 9), n = randInt(2, 9), c = randInt(2, 40);
-    var ans = k + n;
-    return {
-      eyebrow: EY_ZER + ' (WITH DIVISION LAW)',
-      html: 'Evaluate ' + num(k + ' × (' + b + '^{' + m + '} ÷ ' + b + '^{' + m + '}) + ' + n + ' × ' + c + '^{0}'),
-      answer: String(ans),
-      wrong: [k, n, 0, k * n, ans + 1],
-      steps: [
-        'Division law: ' + b + '^{' + m + '} ÷ ' + b + '^{' + m + '} = ' + b + '^{' + m + ' − ' + m + '} = ' + b + '^{0} = 1',
-        'Zero law: ' + c + '^{0} = 1',
-        k + ' × 1 + ' + n + ' × 1 = ' + ans
-      ]
-    };
-  }
-
-  function zeroLaw5(){
-    var p = randInt(2, 5), x = -randInt(2, 7), q = -p * x;
-    return {
-      eyebrow: EY_ZER + ' (SOLVING)',
-      html: 'Given that ' + num('a^{' + lin(p, q) + '} = 1') + ' where a is not 0, 1 or −1, find x.',
-      answer: String(x),
-      wrong: [-x, x + 1, x - 1, q, x - 2],
-      steps: [
-        'Zero law: a^{0} = 1, so the index must be 0.',
-        lin(p, q) + ' = 0',
-        p + 'x = -' + q,
-        'x = -' + q + ' ÷ ' + p + ' = ' + x
-      ]
-    };
-  }
-
-  function zeroLaw6(){
-    var b = randInt(2, 9), m = randInt(2, 7), c = randInt(2, 30), k = randInt(4, 9), d = randInt(2, 9), p = randInt(2, 7), n = randInt(2, 3);
-    var ans = 1 + k - n;
-    return {
-      eyebrow: EY_ZER + ' (WITH NEGATIVE INDEX)',
-      html: 'Evaluate ' + num(b + '^{' + m + '} × ' + b + '^{-' + m + '} + ' + k + ' × ' + c + '^{0} − ' + n + ' × (' + d + '^{' + p + '} ÷ ' + d + '^{' + p + '})'),
-      answer: String(ans),
-      wrong: [k - n, 1 + k + n, k + n, 0, 1 + k * n],
-      steps: [
-        b + '^{' + m + '} × ' + b + '^{-' + m + '} = ' + b + '^{' + m + ' + (-' + m + ')} = ' + b + '^{0} = 1',
-        c + '^{0} = 1',
-        d + '^{' + p + '} ÷ ' + d + '^{' + p + '} = ' + d + '^{0} = 1',
-        '1 + ' + k + ' × 1 − ' + n + ' × 1 = ' + ans
-      ]
-    };
-  }
-
-  // =====================================================
-  //  BUILD THE 50 QUESTIONS (15 modular + 35 indices)
-  // =====================================================
-  var PLAN = [
-    // 15 modular arithmetic
-    modAdd, modMul, modSub, modLin, modMulSolve, modCombo, modClock, modDay, modPow,
-    modSub, modMulSolve, modCombo, modPow, modLin, modMul,
-    // 7 multiplication law
-    mulLaw1, mulLaw2, mulLaw3, mulLaw4, mulLaw2, mulLaw3, mulLaw4,
-    // 7 division law
-    divLaw1, divLaw2, divLaw3, divLaw4, divLaw2, divLaw3, divLaw4,
-    // 7 product (power) law
-    proLaw1, proLaw2, proLaw3, proLaw4, proLaw5, proLaw6, proLaw2,
-    // 7 negative index
-    negLaw1, negLaw2, negLaw3, negLaw4, negLaw5, negLaw6, negLaw7,
-    // 7 zero law
-    zeroLaw1, zeroLaw2, zeroLaw3, zeroLaw4, zeroLaw5, zeroLaw6, zeroLaw3
-  ];
-
-  function generateQuestions(){
-    var seen = {}, out = [];
-    PLAN.forEach(function(fn){
-      var q, tries = 0;
-      do { q = fn(); tries++; } while(seen[q.html] && tries < 80);
-      seen[q.html] = true;
-      out.push(q);
-    });
-    return shuffle(out);
-  }
-
-  function bumpFirstNumber(s, k){
-    return s.replace(/\d+/, function(m){ return String(parseInt(m, 10) + k); });
-  }
-
-  function buildOptions(ans, wrong){
-    var opts = [ans], used = {};
-    used[ans] = true;
-    wrong.forEach(function(w){
-      w = String(w);
-      if(!used[w] && opts.length < 4){ used[w] = true; opts.push(w); }
-    });
-    var bump = 1;
-    while(opts.length < 4 && bump < 30){
-      var c = bumpFirstNumber(ans, bump);
-      bump++;
-      if(!used[c]){ used[c] = true; opts.push(c); }
-    }
-    return shuffle(opts);
-  }
-
-  var questions = generateQuestions().map(function(q){
-    return {
-      data: q,
-      options: buildOptions(q.answer, q.wrong),
+      data: item,
+      answer: answerText,
+      options: shuffle(item.options),
       answered: false,
       selected: null,
       correct: false
@@ -1120,11 +378,9 @@
   var screenStart = document.getElementById('screen-start');
   var screenQuiz = document.getElementById('screen-quiz');
   var screenResults = document.getElementById('screen-results');
-
   var nameInput = document.getElementById('student-name');
   var nameErr = document.getElementById('name-err');
   var startBtn = document.getElementById('start-btn');
-
   var qCounter = document.getElementById('q-counter');
   var liveScore = document.getElementById('live-score');
   var progressFill = document.getElementById('progress-fill');
@@ -1136,7 +392,6 @@
   var stepsWrap = document.getElementById('steps-wrap');
   var prevBtn = document.getElementById('prev-btn');
   var nextBtn = document.getElementById('next-btn');
-
   var resultRing = document.getElementById('result-ring');
   var resultPct = document.getElementById('result-pct');
   var resultName = document.getElementById('result-name');
@@ -1145,7 +400,9 @@
   var sendBtn = document.getElementById('send-btn');
   var retakeBtn = document.getElementById('retake-btn');
 
-  // ---------- Screen 1 logic ----------
+  document.getElementById('q-counter').textContent = 'Question 1 of ' + TOTAL;
+
+  // ---------- Screen 1 ----------
   startBtn.addEventListener('click', function(){
     var val = nameInput.value.trim();
     if(!val){
@@ -1163,44 +420,40 @@
     if(e.key === 'Enter') startBtn.click();
   });
 
-  // ---------- Question rendering ----------
-  function answeredCount(){
-    return questions.filter(function(q){ return q.answered; }).length;
-  }
-  function correctCount(){
-    return questions.filter(function(q){ return q.correct; }).length;
-  }
+  // ---------- Scoring helpers ----------
+  function answeredCount(){ return questions.filter(function(q){ return q.answered; }).length; }
+  function correctCount(){ return questions.filter(function(q){ return q.correct; }).length; }
   function livePercent(){
     var ac = answeredCount();
-    if(ac === 0) return 0;
-    return Math.round((correctCount() / ac) * 100);
+    return ac === 0 ? 0 : Math.round((correctCount() / ac) * 100);
   }
 
+  // ---------- Render a question ----------
   function renderQuestion(){
     var q = questions[currentIndex];
     qCounter.textContent = 'Question ' + (currentIndex + 1) + ' of ' + TOTAL;
     liveScore.textContent = 'Score: ' + livePercent() + '%';
     progressFill.style.width = Math.max(2, Math.round(((currentIndex + 1) / TOTAL) * 100)) + '%';
 
-    qTypeLabel.textContent = q.data.eyebrow;
-    qText.innerHTML = fmtHtml(q.data.html);
+    qTypeLabel.textContent = q.data.topic;
+    qText.innerHTML = fmtHtml(q.data.q);
 
     optionsWrap.innerHTML = '';
     var letters = ['A', 'B', 'C', 'D'];
     q.options.forEach(function(opt, i){
-      var div = document.createElement('button');
-      div.className = 'option';
-      div.type = 'button';
-      div.dataset.val = opt;
-      div.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span>' + fmtHtml(opt) + '</span>';
-      div.addEventListener('click', function(){ selectOption(q, opt, div); });
+      var btn = document.createElement('button');
+      btn.className = 'option';
+      btn.type = 'button';
+      btn.dataset.val = opt;
+      btn.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span>' + fmtHtml(opt) + '</span>';
+      btn.addEventListener('click', function(){ selectOption(q, opt, btn); });
       if(q.answered){
-        div.classList.add('locked');
-        if(opt === q.data.answer) div.classList.add('reveal-correct');
-        if(opt === q.selected && !q.correct) div.classList.add('selected-wrong');
-        if(opt === q.selected && q.correct) div.classList.add('selected-correct');
+        btn.classList.add('locked');
+        if(opt === q.answer) btn.classList.add('reveal-correct');
+        if(opt === q.selected && !q.correct) btn.classList.add('selected-wrong');
+        if(opt === q.selected && q.correct) btn.classList.add('selected-correct');
       }
-      optionsWrap.appendChild(div);
+      optionsWrap.appendChild(btn);
     });
 
     if(q.answered){
@@ -1215,11 +468,12 @@
     nextBtn.textContent = (currentIndex === TOTAL - 1) ? 'Finish Quiz →' : 'Next →';
   }
 
+  // ---------- Choose an answer: lock options, reveal the correct one ----------
   function selectOption(q, opt, el){
     if(q.answered) return;
     q.answered = true;
     q.selected = opt;
-    q.correct = (opt === q.data.answer);
+    q.correct = (opt === q.answer);
 
     var opts = optionsWrap.querySelectorAll('.option');
     opts.forEach(function(o){ o.classList.add('locked'); });
@@ -1229,9 +483,7 @@
     } else {
       el.classList.add('selected-wrong');
       opts.forEach(function(o){
-        if(o.dataset.val === q.data.answer){
-          o.classList.add('reveal-correct');
-        }
+        if(o.dataset.val === q.answer) o.classList.add('reveal-correct');
       });
     }
 
@@ -1245,29 +497,24 @@
     feedbackTitle.className = 'feedback-title ' + (q.correct ? 'correct' : 'wrong');
     feedbackTitle.innerHTML = q.correct
       ? '✓ Correct! Here is the full working:'
-      : '✗ Not quite — correct answer: ' + fmtHtml(q.data.answer) + '. Here is the full working:';
+      : '✗ Not quite — correct answer: ' + fmtHtml(q.answer) + '. Here is the full working:';
 
-    var stepsHtml = q.data.steps.map(function(l){
+    var lines = q.data.working.split(/\.\s+/).map(function(s){ return s.trim(); }).filter(Boolean);
+    var html = lines.map(function(l){
+      if(!/[.?!]$/.test(l)) l += '.';
       return '<div class="step-line">' + fmtHtml(l) + '</div>';
     }).join('');
-    stepsHtml += '<div class="final-line">Final answer: ' + fmtHtml(q.data.answer) + '</div>';
-    stepsWrap.innerHTML = stepsHtml;
+    html += '<div class="final-line">Final answer: ' + fmtHtml(q.answer) + '</div>';
+    stepsWrap.innerHTML = html;
   }
 
+  // ---------- Navigation ----------
   prevBtn.addEventListener('click', function(){
-    if(currentIndex > 0){
-      currentIndex--;
-      renderQuestion();
-    }
+    if(currentIndex > 0){ currentIndex--; renderQuestion(); }
   });
-
   nextBtn.addEventListener('click', function(){
-    if(currentIndex < TOTAL - 1){
-      currentIndex++;
-      renderQuestion();
-    } else {
-      showResults();
-    }
+    if(currentIndex < TOTAL - 1){ currentIndex++; renderQuestion(); }
+    else { showResults(); }
   });
 
   // ---------- Results ----------
@@ -1285,25 +532,22 @@
 
     var msg;
     if(pct >= 85) msg = 'Outstanding work! 🌟';
-    else if(pct >= 70) msg = 'Great job — solid grasp of modular arithmetic and indices!';
+    else if(pct >= 70) msg = 'Great job — a solid grasp of SS1 Mathematics!';
     else if(pct >= 50) msg = 'Good effort — a bit more practice will help.';
     else msg = 'Keep practicing — review the working on each question.';
     resultMsg.textContent = msg;
 
     sendBtn.onclick = function(){
-      var subject = 'Modular Arithmetic & Indices Quiz Result — ' + studentName;
+      var subject = 'SS1 Mathematics Quiz Result — ' + studentName;
       var body = 'Student: ' + studentName + '\n' +
                  'Score: ' + correct + ' / ' + TOTAL + '\n' +
                  'Percentage: ' + pct + '%\n' +
-                 'Topic: SS1 Mathematics — Modular Arithmetic & Indices';
-      var mailto = 'mailto:justzcontentz@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      window.location.href = mailto;
+                 'Subject: SS1 Mathematics';
+      window.location.href = 'mailto:justzcontentz@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     };
   }
 
-  retakeBtn.addEventListener('click', function(){
-    window.location.reload();
-  });
+  retakeBtn.addEventListener('click', function(){ window.location.reload(); });
 
 })();
 </script>
